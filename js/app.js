@@ -407,27 +407,45 @@ async function startPhotoGameWithCount(questionCount) {
         function displayQuestion(index) {
             isAnswerSelected = false;
             const challenge = challenges[index];
-            
-            // Mettre à jour l'image
-            const photoElement = document.querySelector('.mystery-photo');
-            photoElement.src = challenge.image;
-            photoElement.alt = "Photo à deviner";
-            
             // Mélanger les réponses tout en gardant trace de la bonne réponse
             const correctAnswer = challenge.answers[challenge.correctAnswer];
             const shuffledAnswers = [...challenge.answers];
             shuffleArray(shuffledAnswers);
             const newCorrectIndex = shuffledAnswers.indexOf(correctAnswer);
-            
-            // Mettre à jour les réponses
-            const answersContainer = document.querySelector('.answers');
-            answersContainer.innerHTML = shuffledAnswers.map((answer, i) => `
-                <button class="answer-btn" data-index="${i}" data-correct="${i === newCorrectIndex}">${answer}</button>
-            `).join('');
+
+            // Générer le layout split-screen
+            let splitScreenHTML = `
+                <div class="photo-game-container photo-quiz-split fade-in">
+                  <div class="photo-left">
+                    <img src="${challenge.image}" alt="Photo à deviner" class="mystery-photo" />
+                  </div>
+                  <div class="photo-right">
+                    <div class="answers">
+                      ${shuffledAnswers.map((answer, i) => `
+                        <button class="answer-btn" data-index="${i}" data-correct="${i === newCorrectIndex}" type="button">${answer}</button>
+                      `).join('')}
+                    </div>
+                  </div>
+                </div>
+                <div class="quiz-actions">
+                  <button class="next-btn" style="display: none;">Photo suivante</button>
+                  <button class="quit-btn" style="display: block;">Quitter le quiz</button>
+                </div>
+            `;
+
+            // Afficher le titre et la barre de statut au-dessus
+            gameArea.innerHTML = `
+                <h2 class="quiz-title">${gameModes.photos.title}</h2>
+                <div class="quiz-status-bar">
+                    ⏱️ <span id="time">${gameModes.photos.timePerQuestion}</span> s &nbsp;|&nbsp; Photo <span id="current-question">${index+1}</span>/${challenges.length}
+                </div>
+                ${splitScreenHTML}
+            `;
 
             // Ajouter les event listeners
             document.querySelectorAll('.answer-btn').forEach(btn => {
-                btn.addEventListener('click', handleAnswer);
+                btn.disabled = false;
+                btn.addEventListener('click', handleAnswer, { once: true });
             });
 
             // Mettre à jour le compteur
@@ -442,6 +460,20 @@ async function startPhotoGameWithCount(questionCount) {
                     showCorrectAnswer();
                 }
             });
+
+            // Réattacher les boutons suivant/quitter
+            const nextBtn = document.querySelector('.next-btn');
+            const quitBtn = document.querySelector('.quit-btn');
+            nextBtn.addEventListener('click', () => {
+                if (currentQuestionIndex < challenges.length - 1) {
+                    currentQuestionIndex++;
+                    displayQuestion(currentQuestionIndex);
+                    nextBtn.style.display = 'none';
+                } else {
+                    showResults();
+                }
+            });
+            quitBtn.addEventListener('click', showResults);
         }
 
         function handleAnswer(event) {
@@ -472,8 +504,9 @@ async function startPhotoGameWithCount(questionCount) {
             // Arrêter le timer
             if (timerInterval) clearInterval(timerInterval);
 
-            // Afficher le bouton suivant
-            nextBtn.style.display = 'block';
+            // Afficher le bouton suivant (corrigé)
+            const nextBtn = document.querySelector('.next-btn');
+            if (nextBtn) nextBtn.style.display = 'block';
         }
 
         function showCorrectAnswer() {
@@ -520,20 +553,6 @@ async function startPhotoGameWithCount(questionCount) {
                 </div>
             `;
         }
-
-        // Gestionnaire pour le bouton suivant
-        nextBtn.addEventListener('click', () => {
-            if (currentQuestionIndex < challenges.length - 1) {
-                currentQuestionIndex++;
-                displayQuestion(currentQuestionIndex);
-                nextBtn.style.display = 'none';
-            } else {
-                showResults();
-            }
-        });
-
-        // Gestionnaire pour le bouton quitter
-        quitBtn.addEventListener('click', showResults);
 
         // Démarrer avec la première question
         displayQuestion(currentQuestionIndex);
