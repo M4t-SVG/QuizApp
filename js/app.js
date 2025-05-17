@@ -28,7 +28,7 @@ document.querySelectorAll('.game-mode-btn').forEach(button => {
 // Fonction pour démarrer un jeu
 function startGame(mode) {
     const gameArea = document.querySelector('.game-area');
-    const modeSelection = document.querySelector('.mode-selection');
+    const modeSelection = document.querySelector('.home-hero');
     
     // Cacher la sélection de mode et afficher la zone de jeu
     modeSelection.style.display = 'none';
@@ -48,6 +48,8 @@ function startGame(mode) {
     }
 }
 
+window.startGame = startGame;
+
 // Fonction pour mélanger un tableau (algorithme de Fisher-Yates)
 function shuffleArray(array) {
     for (let i = array.length - 1; i > 0; i--) {
@@ -61,22 +63,17 @@ function shuffleArray(array) {
 async function initQuizGame() {
     const gameArea = document.querySelector('.game-area');
     gameArea.innerHTML = `
-        <div class="quiz-container">
-            <h2>${gameModes.quiz.title}</h2>
-            <div class="quiz-options">
-                <h3>Choisissez le nombre de questions :</h3>
-                <div class="question-count-buttons">
-                    <button class="count-btn" data-count="10">10 questions</button>
-                    <button class="count-btn" data-count="25">25 questions</button>
-                    <button class="count-btn" data-count="50">50 questions</button>
-                    <button class="count-btn" data-count="100">100 questions</button>
-                </div>
+        <div class="quiz-container fade-in">
+            <h2 class="quiz-title">${gameModes.quiz.title}</h2>
+            <div class="game-modes-cards">
+                <button class="game-mode-card count-btn" data-count="10">10 questions</button>
+                <button class="game-mode-card count-btn" data-count="25">25 questions</button>
+                <button class="game-mode-card count-btn" data-count="50">50 questions</button>
+                <button class="game-mode-card count-btn" data-count="100">100 questions</button>
             </div>
             <button class="menu-btn" onclick="returnToMainMenu()">Retour au menu</button>
         </div>
     `;
-
-    // Ajouter les événements sur les boutons de sélection
     document.querySelectorAll('.count-btn').forEach(btn => {
         btn.addEventListener('click', async () => {
             const questionCount = parseInt(btn.dataset.count);
@@ -101,12 +98,14 @@ async function startQuizWithCount(questionCount) {
 
         const gameArea = document.querySelector('.game-area');
         gameArea.innerHTML = `
-            <div class="quiz-header-row">
-                <h2 class="quiz-title" style="text-align:center; width:100%">${gameModes.quiz.title}</h2>
-            </div>
-            <div class="quiz-status-bar">
-                ⏱️ <span id="time">${gameModes.quiz.timePerQuestion}</span> s
-                <span class="progress-bar-inline">Question <span id="current-question">1</span>/${questionCount}</span>
+            <h2 class="quiz-title" style="text-align:center; width:100%; margin-top:1.2rem;">${gameModes.quiz.title}</h2>
+            <div class="quiz-status-bar" style="display:flex; justify-content:center; align-items:center; gap:1.2rem; flex-wrap:nowrap; margin-bottom:1.2rem;">
+                <span class="timer" style="display:flex; align-items:center; gap:0.3rem; font-weight:600; font-size:1.1rem; background:rgba(255,255,255,0.13); padding:0.5rem 1.1rem; border-radius:18px; white-space:nowrap;">
+                    ⏱️ <span id="time">${gameModes.quiz.timePerQuestion}</span> s
+                </span>
+                <span class="progress-bar-inline" style="font-weight:600; font-size:1.1rem; background:rgba(255,255,255,0.13); padding:0.5rem 1.1rem; border-radius:18px; white-space:nowrap;">
+                    Question <span id="current-question">1</span>/${questionCount}
+                </span>
             </div>
             <div class="question-bubble"><span class="question">Chargement de la question...</span></div>
             <div class="answers"></div>
@@ -242,16 +241,13 @@ async function startQuizWithCount(questionCount) {
 function initPhotoGame() {
     const gameArea = document.querySelector('.game-area');
     gameArea.innerHTML = `
-        <div class="photo-game-container">
+        <div class="photo-game-container fade-in">
             <h2 class="quiz-title">Devinette Photo</h2>
-            <div class="quiz-options">
-                <h3>Choisissez le nombre de devinettes :</h3>
-                <div class="question-count-buttons">
-                    <button class="count-btn" data-count="10">10 photos</button>
-                    <button class="count-btn" data-count="25">25 photos</button>
-                    <button class="count-btn" data-count="50">50 photos</button>
-                    <button class="count-btn" data-count="100">100 photos</button>
-                </div>
+            <div class="game-modes-cards">
+                <button class="game-mode-card count-btn" data-count="10">10 photos</button>
+                <button class="game-mode-card count-btn" data-count="25">25 photos</button>
+                <button class="game-mode-card count-btn" data-count="50">50 photos</button>
+                <button class="game-mode-card count-btn" data-count="100">100 photos</button>
             </div>
             <button class="menu-btn" onclick="returnToMainMenu()">Retour au menu</button>
         </div>
@@ -324,16 +320,13 @@ function showTruthDareCountSelection(selectedMode) {
     if (selectedMode === 'alcool') modeLabel = 'Alcool';
     if (selectedMode === 'adulte') modeLabel = '+18';
     gameArea.innerHTML = `
-        <div class="truth-dare-container">
+        <div class="truth-dare-container fade-in">
             <h2 class="quiz-title">Action / Vérité - ${modeLabel}</h2>
-            <div class="quiz-options">
-                <h3>Choisissez le nombre de défis :</h3>
-                <div class="question-count-buttons">
-                    <button class="count-btn" data-count="10">10 défis</button>
-                    <button class="count-btn" data-count="25">25 défis</button>
-                    <button class="count-btn" data-count="50">50 défis</button>
-                    <button class="count-btn" data-count="100">100 défis</button>
-                </div>
+            <div class="game-modes-cards">
+                <button class="game-mode-card count-btn" data-count="10">10 défis</button>
+                <button class="game-mode-card count-btn" data-count="25">25 défis</button>
+                <button class="game-mode-card count-btn" data-count="50">50 défis</button>
+                <button class="game-mode-card count-btn" data-count="100">100 défis</button>
             </div>
             <button class="menu-btn" onclick="returnToMainMenu()">Retour au menu</button>
         </div>
@@ -390,7 +383,7 @@ function startTimer(duration, displayElement, onComplete) {
 // Fonction pour revenir au menu principal
 window.returnToMainMenu = function() {
     const gameArea = document.querySelector('.game-area');
-    const modeSelection = document.querySelector('.mode-selection');
+    const modeSelection = document.querySelector('.home-hero');
     
     gameArea.style.display = 'none';
     modeSelection.style.display = 'block';

@@ -1,12 +1,12 @@
 :root {
-    --primary-color: #8A2BE2; /* Violet vif */
-    --secondary-color: #FF6B6B; /* Orange corail */
-    --accent-color: #FFD700; /* Or */
-    --background-color: #4B0082; /* Indigo foncé */
+    --primary-color: #2563eb; /* Bleu vif */
+    --secondary-color: #38bdf8; /* Bleu clair */
+    --accent-color: #60a5fa; /* Bleu accent */
+    --background-color: #1e3a8a; /* Bleu foncé */
     --text-color: #FFFFFF; /* Blanc */
     --error-color: #FF4444; /* Rouge vif */
-    --success-color: #00C851; /* Vert vif */
-    --button-hover: #9B4DCA; /* Violet plus clair */
+    --success-color: #22d3ee; /* Bleu turquoise */
+    --button-hover: #3b82f6; /* Bleu plus clair */
 }
 
 * {
@@ -16,14 +16,18 @@
 }
 
 body {
-    font-family: 'Roboto', sans-serif;
-    background-color: var(--background-color);
-    color: var(--text-color);
-    line-height: 1.6;
-    background-image: 
-        radial-gradient(circle at 10% 20%, rgba(138, 43, 226, 0.2) 0%, transparent 20%),
-        radial-gradient(circle at 90% 80%, rgba(255, 107, 107, 0.2) 0%, transparent 20%);
-    background-attachment: fixed;
+    min-height: 100vh;
+    margin: 0;
+    font-family: 'Roboto', Arial, sans-serif;
+    background: linear-gradient(135deg, #2563eb 0%, #38bdf8 100%);
+    background-size: 200% 200%;
+    animation: bgMove 8s ease-in-out infinite;
+}
+
+@keyframes bgMove {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
 }
 
 .app-container {
@@ -279,7 +283,7 @@ body {
     font-size: 2rem;
     font-weight: 700;
     color: #fff;
-    text-shadow: 1px 1px 8px rgba(0,0,0,0.10);
+    text-shadow: 2px 2px 12px #0005, 0 0 18px #38bdf8cc;
     margin: 0.1rem 0 0.1rem 0;
     flex: 1;
     text-align: left;
@@ -318,6 +322,7 @@ body {
     margin-right: 0;
     border: 3px solid var(--primary-color);
     min-height: 120px;
+    
     height: auto;
     word-break: break-word;
     white-space: normal;
@@ -335,7 +340,7 @@ body {
 }
 
 button, .count-btn, .menu-btn, .mode-btn, .game-mode-btn, .next-btn, .quit-btn {
-    background: linear-gradient(90deg, var(--primary-color) 0%, #a259ec 100%);
+    background: linear-gradient(90deg, var(--primary-color) 0%, var(--secondary-color) 100%);
     color: #fff;
     border: none;
     border-radius: 18px;
@@ -396,7 +401,7 @@ button:hover, .count-btn:hover, .menu-btn:hover, .mode-btn:hover, .game-mode-btn
 }
 
 .answer-btn {
-    background: linear-gradient(90deg, var(--primary-color) 0%, #a259ec 100%);
+    background: linear-gradient(90deg, var(--primary-color) 0%, var(--secondary-color) 100%);
     color: #fff;
     border: none;
     border-radius: 18px;
@@ -415,7 +420,7 @@ button:hover, .count-btn:hover, .menu-btn:hover, .mode-btn:hover, .game-mode-btn
 }
 
 .answer-btn:nth-child(even) {
-    background: linear-gradient(90deg, var(--primary-color) 0%, #a259ec 100%);
+    background: linear-gradient(90deg, var(--primary-color) 0%, var(--secondary-color) 100%);
     color: #fff;
     border: none;
 }
@@ -644,7 +649,7 @@ button:hover, .count-btn:hover, .menu-btn:hover, .mode-btn:hover, .game-mode-btn
 
 .menu-btn {
     margin-top: 1.2rem;
-    background: linear-gradient(90deg, var(--primary-color) 0%, #a259ec 100%);
+    background: linear-gradient(90deg, var(--primary-color) 0%, var(--secondary-color) 100%);
     color: #fff;
     border-radius: 18px;
     padding: 1rem 1.5rem;
@@ -945,4 +950,161 @@ body.accueil .mode-selection {
     flex-direction: column;
     justify-content: center;
     align-items: center;
+}
+
+/* --- HERO --- */
+.home-hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 1rem 1.5rem 1rem;
+    box-sizing: border-box;
+}
+.home-hero header {
+    text-align: center;
+    margin-bottom: 1.5rem;
+}
+.party-emoji {
+    font-size: 2.2rem;
+    vertical-align: middle;
+    margin-right: 0.2em;
+    filter: drop-shadow(0 0 8px #fff6);
+    animation: bounceParty 1.5s infinite;
+}
+@keyframes bounceParty {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px) scale(1.1); }
+}
+.home-hero h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #fff;
+    text-shadow: 2px 2px 12px #0005, 0 0 18px #38bdf8cc;
+    margin-bottom: 0.3rem;
+}
+.slogan {
+    font-size: 1.2rem;
+    color: #fff;
+    font-weight: 500;
+    text-shadow: 1px 1px 8px #0007;
+    margin-bottom: 1.2rem;
+    letter-spacing: 0.01em;
+    animation: fadeIn 1.2s;
+}
+
+/* --- BOUTONS MODES DE JEU --- */
+.game-modes-cards {
+    display: flex;
+    flex-direction: column;
+    gap: 1.3rem;
+    width: 100%;
+    max-width: 400px;
+    margin-bottom: 2.2rem;
+}
+.game-mode-card {
+    background: rgba(255,255,255,0.18);
+    border: none;
+    border-radius: 28px;
+    box-shadow: 0 6px 32px #0002, 0 1.5px 8px #38bdf8aa;
+    padding: 1.1rem 1.2rem 1.1rem 1.2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    transition: transform 0.18s, box-shadow 0.18s, background 0.18s;
+    position: relative;
+    overflow: hidden;
+    outline: none;
+    animation: fadeIn 0.7s;
+}
+.game-mode-card .icon {
+    font-size: 2.3rem;
+    background: linear-gradient(135deg, #fff 60%, #38bdf8 100%);
+    border-radius: 50%;
+    box-shadow: 0 2px 12px #38bdf855, 0 0 0 4px #fff3;
+    padding: 0.4em;
+    margin-bottom: 0.5em;
+    margin-top: 0.1em;
+    transition: box-shadow 0.2s;
+}
+.game-mode-card .title {
+    font-size: 1.18rem;
+    font-weight: 600;
+    color: #fff;
+    margin-bottom: 0.2em;
+    text-shadow: 1px 1px 8px #0005;
+}
+.game-mode-card .desc {
+    font-size: 1rem;
+    color: #ffe066;
+    font-weight: 400;
+    text-shadow: 1px 1px 8px #0007;
+}
+.game-mode-card:hover, .game-mode-card:focus {
+    background: rgba(255,255,255,0.32);
+    transform: scale(1.045) rotate(-1deg);
+    box-shadow: 0 10px 40px #60a5fa, 0 2px 12px #fff6;
+}
+.game-mode-card:hover .icon, .game-mode-card:focus .icon {
+    box-shadow: 0 0 0 8px #ffe06655, 0 2px 12px #f357a899;
+}
+
+/* --- FOOTER --- */
+.home-hero footer {
+    margin-top: auto;
+    text-align: center;
+    color: #fff;
+    font-size: 1rem;
+    opacity: 0.92;
+    text-shadow: 1px 1px 8px #0007;
+    letter-spacing: 0.01em;
+    padding-bottom: 0.5rem;
+}
+
+/* --- ANIMATION FADEIN --- */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* --- RESPONSIVE --- */
+@media (max-width: 600px) {
+    .home-hero h1 { font-size: 2rem; }
+    .game-modes-cards { max-width: 98vw; }
+    .game-mode-card { padding: 1rem 0.5rem; }
+}
+
+/* --- CACHER L'ANCIENNE STRUCTURE PAR DÉFAUT --- */
+.app-container, .mode-selection, .app-footer, .app-header { display: none !important; }
+
+.game-modes-cards .count-btn {
+    background: rgba(255,255,255,0.18);
+    border: none;
+    border-radius: 28px;
+    box-shadow: 0 6px 32px #0002, 0 1.5px 8px #38bdf8aa;
+    padding: 1.1rem 1.2rem 1.1rem 1.2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    transition: transform 0.18s, box-shadow 0.18s, background 0.18s;
+    position: relative;
+    overflow: hidden;
+    outline: none;
+    animation: fadeIn 0.7s;
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: #fff;
+    margin: 0.2rem 0;
+}
+.game-modes-cards .count-btn:hover, .game-modes-cards .count-btn:focus {
+    background: rgba(255,255,255,0.32);
+    transform: scale(1.045) rotate(-1deg);
+    box-shadow: 0 10px 40px #60a5fa, 0 2px 12px #fff6;
+}
+
+.results-title, .results-row.highlight .results-label, .results-row.highlight .results-value {
+    color: #fff !important;
 } 
