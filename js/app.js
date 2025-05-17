@@ -92,6 +92,37 @@ async function initQuizGame() {
         <div class="quiz-container fade-in">
             <h2 class="quiz-title">${gameModes.quiz.title}</h2>
             <div class="game-modes-cards">
+                <button class="game-mode-card mode-btn" data-mode="master">
+                    <span class="icon">👑</span>
+                    <span class="title">Mode Maître du jeu</span>
+                    <span class="desc">Une seule personne pose les questions</span>
+                </button>
+                <button class="game-mode-card mode-btn" data-mode="pass">
+                    <span class="icon">🔄</span>
+                    <span class="title">Mode Passe à ton voisin</span>
+                    <span class="desc">Le téléphone passe entre les joueurs</span>
+                </button>
+            </div>
+            <button class="menu-btn" onclick="returnToMainMenu()">Retour au menu</button>
+        </div>
+    `;
+
+    document.querySelectorAll('.mode-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const mode = btn.dataset.mode;
+            showQuestionCountSelection(mode);
+        });
+    });
+}
+
+function showQuestionCountSelection(gameMode) {
+    const gameArea = document.querySelector('.game-area');
+    const modeLabel = gameMode === 'master' ? 'Maître du jeu' : 'Passe à ton voisin';
+    
+    gameArea.innerHTML = `
+        <div class="quiz-container fade-in">
+            <h2 class="quiz-title">${gameModes.quiz.title} - ${modeLabel}</h2>
+            <div class="game-modes-cards">
                 <button class="game-mode-card count-btn" data-count="10">10 questions</button>
                 <button class="game-mode-card count-btn" data-count="25">25 questions</button>
                 <button class="game-mode-card count-btn" data-count="50">50 questions</button>
@@ -100,15 +131,16 @@ async function initQuizGame() {
             <button class="menu-btn" onclick="returnToMainMenu()">Retour au menu</button>
         </div>
     `;
+
     document.querySelectorAll('.count-btn').forEach(btn => {
         btn.addEventListener('click', async () => {
             const questionCount = parseInt(btn.dataset.count);
-            await startQuizWithCount(questionCount);
+            await startQuizWithCount(questionCount, gameMode);
         });
     });
 }
 
-async function startQuizWithCount(questionCount) {
+async function startQuizWithCount(questionCount, gameMode) {
     try {
         const response = await fetch('data/questions.json');
         const data = await response.json();
@@ -123,35 +155,63 @@ async function startQuizWithCount(questionCount) {
         }
 
         const gameArea = document.querySelector('.game-area');
-        gameArea.innerHTML = `
-            <h2 class="quiz-title" style="text-align:center; width:100%; margin-top:1.2rem;">${gameModes.quiz.title}</h2>
-            <div class="quiz-status-bar">
-                ⏱️ <span id="time">${gameModes.quiz.timePerQuestion}</span> s &nbsp;|&nbsp; Question <span id="current-question">1</span>/${questionCount}
-            </div>
-            <div class="question-bubble"><span class="question">Chargement de la question...</span></div>
-            <div class="answers"></div>
-            <div class="quiz-actions">
-                <button class="next-btn" style="display: none;">Question suivante</button>
-                <button class="quit-btn" style="display: block;">Quitter le quiz</button>
-            </div>
-        `;
+        const modeLabel = gameMode === 'master' ? 'Maître du jeu' : 'Passe à ton voisin';
+        
+        function renderQuizQuestionScreen(index) {
+            gameArea.innerHTML = `
+                <h2 class="quiz-title" style="text-align:center; width:100%; margin-top:1.2rem;">${gameModes.quiz.title} - ${modeLabel}</h2>
+                <div class="quiz-status-bar">
+                    ⏱️ <span id="time">${gameModes.quiz.timePerQuestion}</span> s &nbsp;|&nbsp; Question <span id="current-question">${index+1}</span>/${questionCount}
+                </div>
+                <div class="question-bubble"><span class="question">Chargement de la question...</span></div>
+                <div class="answers"></div>
+                <div class="quiz-actions">
+                    <button class="next-btn" style="display: none;">Question suivante</button>
+                    <button class="quit-btn" style="display: block;">Quitter le quiz</button>
+                </div>
+            `;
+            displayQuestion(index);
+            // Réattacher le listener du bouton quitter
+            const quitBtn = document.querySelector('.quit-btn');
+            if (quitBtn) {
+                quitBtn.onclick = showResults;
+            }
+        }
 
         let currentQuestionIndex = 0;
         let score = 0;
         let timerInterval;
         let isAnswerSelected = false;
 
-        const nextBtn = document.querySelector('.next-btn');
-        nextBtn.addEventListener('click', () => {
+        const nextBtnHandler = () => {
             if (currentQuestionIndex < questions.length - 1) {
                 currentQuestionIndex++;
                 isAnswerSelected = false;
-                displayQuestion(currentQuestionIndex);
-                nextBtn.style.display = 'none';
+                if (gameMode === 'pass') {
+                    showPassPhoneScreen(currentQuestionIndex, questions.length, () => renderQuizQuestionScreen(currentQuestionIndex));
+                } else {
+                    renderQuizQuestionScreen(currentQuestionIndex);
+                }
             } else {
                 showResults();
             }
-        });
+        };
+
+        function showPassPhoneScreen(currentQuestionIndex, totalQuestions, onContinue) {
+            const gameArea = document.querySelector('.game-area');
+            const currentNum = currentQuestionIndex + 1;
+            gameArea.innerHTML = `
+                <div class="pass-phone-screen fade-in">
+                    <div class="big-question-label fade-in-delay0">Question ${currentNum} / ${totalQuestions}</div>
+                    <span class="phone-emoji bounce-in">📱</span>
+                    <h2 class="pass-title fade-in-delay1">Passe le téléphone au joueur suivant !</h2>
+                    <button class="next-btn fade-in-delay2">Continuer</button>
+                </div>
+            `;
+            document.querySelector('.next-btn').addEventListener('click', () => {
+                if (typeof onContinue === 'function') onContinue();
+            });
+        }
 
         function displayQuestion(index) {
             const question = questions[index];
@@ -186,15 +246,19 @@ async function startQuizWithCount(questionCount) {
                     showCorrectAnswer();
                 }
             });
+
+            // Réattacher le handler du bouton suivant
+            const nextBtn = document.querySelector('.next-btn');
+            if (nextBtn) {
+                nextBtn.onclick = nextBtnHandler;
+            }
         }
 
         function handleAnswer(event) {
             if (isAnswerSelected) return;
             isAnswerSelected = true;
-            
             const selectedIndex = parseInt(event.target.dataset.index);
             const question = questions[currentQuestionIndex];
-            
             document.querySelectorAll('.answer-btn').forEach((btn, i) => {
                 btn.disabled = true;
                 if (i === question.correctAnswer) {
@@ -204,14 +268,13 @@ async function startQuizWithCount(questionCount) {
                     btn.classList.add('wrong');
                 }
             });
-            
             if (selectedIndex === question.correctAnswer) {
                 score++;
             }
-            
             flashEffect(selectedIndex === question.correctAnswer);
             if (timerInterval) clearInterval(timerInterval);
-            nextBtn.style.display = 'block';
+            const nextBtn = document.querySelector('.next-btn');
+            if (nextBtn) nextBtn.style.display = 'block';
         }
 
         function showCorrectAnswer() {
@@ -225,7 +288,8 @@ async function startQuizWithCount(questionCount) {
                     btn.classList.add('correct');
                 }
             });
-            nextBtn.style.display = 'block';
+            const nextBtn = document.querySelector('.next-btn');
+            if (nextBtn) nextBtn.style.display = 'block';
         }
 
         function showResults() {
@@ -258,13 +322,12 @@ async function startQuizWithCount(questionCount) {
             `;
         }
 
-        // Modifier l'événement sur le bouton Quitter
+        // Initialisation
+        renderQuizQuestionScreen(currentQuestionIndex);
+        // Bouton quitter
         document.querySelector('.quit-btn').addEventListener('click', () => {
             showResults();
         });
-
-        // Démarrer avec la première question
-        displayQuestion(currentQuestionIndex);
 
     } catch (error) {
         console.error('Erreur lors du chargement des questions:', error);
@@ -491,24 +554,27 @@ async function initTruthDareGame() {
     gameArea.innerHTML = `
         <div class="truth-dare-container fade-in">
             <h2 class="quiz-title">Action / Vérité</h2>
-            <div class="quiz-options">
-                <h3>Choisissez un mode :</h3>
-                <div class="game-modes">
-                    <button class="game-mode-btn" data-mode="normal">
-                        <span class="icon">🎲</span> Normal
-                    </button>
-                    <button class="game-mode-btn" data-mode="alcool">
-                        <span class="icon">🍻</span> Alcool
-                    </button>
-                    <button class="game-mode-btn" data-mode="adulte">
-                        <span class="icon">🔞</span> +18
-                    </button>
-                </div>
+            <div class="game-modes-cards">
+                <button class="game-mode-card" data-mode="normal">
+                    <span class="icon">🎲</span>
+                    <span class="title">Normal</span>
+                    <span class="desc">Défis classiques pour tous</span>
+                </button>
+                <button class="game-mode-card" data-mode="alcool">
+                    <span class="icon">🍻</span>
+                    <span class="title">Alcool</span>
+                    <span class="desc">Défis à boire, à consommer avec modération</span>
+                </button>
+                <button class="game-mode-card" data-mode="adulte">
+                    <span class="icon">🔞</span>
+                    <span class="title">+18</span>
+                    <span class="desc">Défis réservés aux adultes</span>
+                </button>
             </div>
             <button class="menu-btn" onclick="returnToMainMenu()">Retour au menu</button>
         </div>
     `;
-    document.querySelectorAll('.game-mode-btn').forEach(btn => {
+    document.querySelectorAll('.game-mode-card').forEach(btn => {
         btn.addEventListener('click', () => {
             const selectedMode = btn.dataset.mode;
             showTruthDareCountSelection(selectedMode);
