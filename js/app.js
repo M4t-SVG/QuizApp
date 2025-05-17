@@ -159,7 +159,7 @@ async function startQuizWithCount(questionCount, gameMode) {
         
         function renderQuizQuestionScreen(index) {
             gameArea.innerHTML = `
-                <h2 class="quiz-title" style="text-align:center; width:100%; margin-top:1.2rem;">${gameModes.quiz.title} - ${modeLabel}</h2>
+                <h2 class="quiz-title">${gameModes.quiz.title} - ${modeLabel}</h2>
                 <div class="quiz-status-bar">
                     ⏱️ <span id="time">${gameModes.quiz.timePerQuestion}</span> s &nbsp;|&nbsp; Question <span id="current-question">${index+1}</span>/${questionCount}
                 </div>
@@ -214,6 +214,7 @@ async function startQuizWithCount(questionCount, gameMode) {
         }
 
         function displayQuestion(index) {
+            isAnswerSelected = false;
             const question = questions[index];
             document.querySelector('.question-bubble .question').textContent = question.question;
             document.getElementById('current-question').textContent = (index + 1);
@@ -381,7 +382,7 @@ async function startPhotoGameWithCount(questionCount) {
 
         const gameArea = document.querySelector('.game-area');
         gameArea.innerHTML = `
-            <h2 class="quiz-title" style="text-align:center; width:100%; margin-top:1.2rem;">${gameModes.photos.title}</h2>
+            <h2 class="quiz-title">${gameModes.photos.title}</h2>
             <div class="quiz-status-bar">
                 ⏱️ <span id="time">${gameModes.photos.timePerQuestion}</span> s &nbsp;|&nbsp; Photo <span id="current-question">1</span>/${questionCount}
             </div>
@@ -412,10 +413,16 @@ async function startPhotoGameWithCount(questionCount) {
             photoElement.src = challenge.image;
             photoElement.alt = "Photo à deviner";
             
+            // Mélanger les réponses tout en gardant trace de la bonne réponse
+            const correctAnswer = challenge.answers[challenge.correctAnswer];
+            const shuffledAnswers = [...challenge.answers];
+            shuffleArray(shuffledAnswers);
+            const newCorrectIndex = shuffledAnswers.indexOf(correctAnswer);
+            
             // Mettre à jour les réponses
             const answersContainer = document.querySelector('.answers');
-            answersContainer.innerHTML = challenge.answers.map((answer, i) => `
-                <button class="answer-btn" data-index="${i}">${answer}</button>
+            answersContainer.innerHTML = shuffledAnswers.map((answer, i) => `
+                <button class="answer-btn" data-index="${i}" data-correct="${i === newCorrectIndex}">${answer}</button>
             `).join('');
 
             // Ajouter les event listeners
@@ -442,26 +449,25 @@ async function startPhotoGameWithCount(questionCount) {
             isAnswerSelected = true;
 
             const selectedIndex = parseInt(event.target.dataset.index);
-            const challenge = challenges[currentQuestionIndex];
+            const isCorrect = event.target.dataset.correct === 'true';
 
             // Désactiver tous les boutons
             document.querySelectorAll('.answer-btn').forEach(btn => {
                 btn.disabled = true;
-                const btnIndex = parseInt(btn.dataset.index);
-                if (btnIndex === challenge.correctAnswer) {
+                if (btn.dataset.correct === 'true') {
                     btn.classList.add('correct');
-                } else if (btnIndex === selectedIndex) {
+                } else if (parseInt(btn.dataset.index) === selectedIndex) {
                     btn.classList.add('wrong');
                 }
             });
 
             // Mettre à jour le score
-            if (selectedIndex === challenge.correctAnswer) {
+            if (isCorrect) {
                 score++;
             }
 
             // Effet visuel
-            flashEffect(selectedIndex === challenge.correctAnswer);
+            flashEffect(isCorrect);
 
             // Arrêter le timer
             if (timerInterval) clearInterval(timerInterval);
@@ -474,10 +480,9 @@ async function startPhotoGameWithCount(questionCount) {
             if (isAnswerSelected) return;
             isAnswerSelected = true;
 
-            const challenge = challenges[currentQuestionIndex];
             document.querySelectorAll('.answer-btn').forEach(btn => {
                 btn.disabled = true;
-                if (parseInt(btn.dataset.index) === challenge.correctAnswer) {
+                if (btn.dataset.correct === 'true') {
                     btn.classList.add('correct');
                 }
             });
