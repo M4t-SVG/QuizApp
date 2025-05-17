@@ -72,6 +72,7 @@ async function initQuizGame() {
                     <button class="count-btn" data-count="100">100 questions</button>
                 </div>
             </div>
+            <button class="menu-btn" onclick="returnToMainMenu()">Retour au menu</button>
         </div>
     `;
 
@@ -252,6 +253,7 @@ function initPhotoGame() {
                     <button class="count-btn" data-count="100">100 photos</button>
                 </div>
             </div>
+            <button class="menu-btn" onclick="returnToMainMenu()">Retour au menu</button>
         </div>
     `;
     document.querySelectorAll('.count-btn').forEach(btn => {
@@ -289,19 +291,26 @@ async function startPhotoGameWithCount(questionCount) {
 function initTruthDareGame() {
     const gameArea = document.querySelector('.game-area');
     gameArea.innerHTML = `
-        <div class="truth-dare-container">
+        <div class="truth-dare-container fade-in">
             <h2 class="quiz-title">Action / Vérité</h2>
             <div class="quiz-options">
                 <h3>Choisissez un mode :</h3>
-                <div class="truth-dare-mode-buttons">
-                    <button class="mode-btn" data-mode="normal">Normal</button>
-                    <button class="mode-btn" data-mode="alcool">Alcool</button>
-                    <button class="mode-btn" data-mode="adulte">+18</button>
+                <div class="game-modes">
+                    <button class="game-mode-btn" data-mode="normal">
+                        <span class="icon">🎲</span> Normal
+                    </button>
+                    <button class="game-mode-btn" data-mode="alcool">
+                        <span class="icon">🍻</span> Alcool
+                    </button>
+                    <button class="game-mode-btn" data-mode="adulte">
+                        <span class="icon">🔞</span> +18
+                    </button>
                 </div>
             </div>
+            <button class="menu-btn" onclick="returnToMainMenu()">Retour au menu</button>
         </div>
     `;
-    document.querySelectorAll('.mode-btn').forEach(btn => {
+    document.querySelectorAll('.game-mode-btn').forEach(btn => {
         btn.addEventListener('click', () => {
             const selectedMode = btn.dataset.mode;
             showTruthDareCountSelection(selectedMode);
@@ -326,6 +335,7 @@ function showTruthDareCountSelection(selectedMode) {
                     <button class="count-btn" data-count="100">100 défis</button>
                 </div>
             </div>
+            <button class="menu-btn" onclick="returnToMainMenu()">Retour au menu</button>
         </div>
     `;
     document.querySelectorAll('.count-btn').forEach(btn => {
