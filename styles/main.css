@@ -1530,12 +1530,22 @@ body.accueil .mode-selection {
     40%, 60% { background: rgba(255, 0, 0, 0.32); }
 }
 
+@keyframes flash-yellow {
+    0%, 100% { background: none; }
+    20%, 80% { background: rgba(255, 255, 0, 0.18); }
+    40%, 60% { background: rgba(255, 255, 0, 0.32); }
+}
+
 .game-area.flash-correct {
     animation: flash-green 0.5s;
 }
 
 .game-area.flash-wrong {
     animation: flash-red 0.5s;
+}
+
+.game-area.flash-warning {
+    animation: flash-yellow 1s infinite;
 }
 
 /* Media queries pour tablette (768px et plus) */
@@ -1851,4 +1861,25 @@ body.accueil .mode-selection {
 @keyframes nextBtnPulse {
     0%, 100% { box-shadow: 0 6px 32px #22d3ee55, 0 2px 12px #38bdf8aa; }
     50% { box-shadow: 0 0 32px 8px #22d3ee99, 0 2px 12px #38bdf8aa; }
+}
+
+/* Overlay pour les effets de flash sur tout l'écran */
+.flash-overlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none;
+    z-index: 9999;
+    background: none;
+}
+
+.flash-overlay.flash-correct {
+    animation: flash-green 0.5s;
+}
+.flash-overlay.flash-wrong {
+    animation: flash-red 0.5s;
+}
+.flash-overlay.flash-warning {
+    animation: flash-yellow 1s infinite;
 } 

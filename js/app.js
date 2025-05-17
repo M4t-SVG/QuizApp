@@ -657,18 +657,48 @@ async function startTruthDareWithCount(questionCount, selectedMode) {
     // TODO: Logique du jeu action/vérité à compléter
 }
 
-// Fonction utilitaire pour gérer le timer
+// Fonction utilitaire pour obtenir ou créer l'overlay de flash global
+function getFlashOverlay() {
+    let overlay = document.querySelector('.flash-overlay');
+    if (!overlay) {
+        overlay = document.createElement('div');
+        overlay.className = 'flash-overlay';
+        document.body.appendChild(overlay);
+    }
+    return overlay;
+}
+
+// Fonction utilitaire pour effet visuel de clignotement
+function flashEffect(isCorrect) {
+    const overlay = getFlashOverlay();
+    overlay.classList.remove('flash-correct', 'flash-wrong', 'flash-warning');
+    void overlay.offsetWidth; // Force reflow pour rejouer l'animation
+    overlay.classList.add(isCorrect ? 'flash-correct' : 'flash-wrong');
+    setTimeout(() => {
+        overlay.classList.remove('flash-correct', 'flash-wrong');
+    }, 500);
+}
+
+// Fonction utilitaire pour gérer le timer avec effet warning global
 function startTimer(duration, displayElement, onComplete) {
     let timer = duration;
+    const overlay = getFlashOverlay();
     const countdown = setInterval(() => {
         displayElement.textContent = timer;
-        
+        // Effet warning global
+        if (timer <= 10 && !overlay.classList.contains('flash-warning')) {
+            overlay.classList.add('flash-warning');
+        } else if (timer > 10 && overlay.classList.contains('flash-warning')) {
+            overlay.classList.remove('flash-warning');
+        }
         if (--timer < 0) {
             clearInterval(countdown);
+            if (overlay.classList.contains('flash-warning')) {
+                overlay.classList.remove('flash-warning');
+            }
             if (onComplete) onComplete();
         }
     }, 1000);
-    
     return countdown;
 }
 
@@ -679,16 +709,4 @@ function returnToMainMenu() {
     
     gameArea.style.display = 'none';
     modeSelection.style.display = 'block';
-}
-
-// Fonction utilitaire pour effet visuel de clignotement
-function flashEffect(isCorrect) {
-    const gameArea = document.querySelector('.game-area');
-    if (!gameArea) return;
-    gameArea.classList.remove('flash-correct', 'flash-wrong');
-    void gameArea.offsetWidth; // Force reflow pour rejouer l'animation
-    gameArea.classList.add(isCorrect ? 'flash-correct' : 'flash-wrong');
-    setTimeout(() => {
-        gameArea.classList.remove('flash-correct', 'flash-wrong');
-    }, 500);
 } 
