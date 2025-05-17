@@ -17,16 +17,25 @@ const gameModes = {
     }
 };
 
+// Exposer les fonctions globalement
+window.startGame = startGame;
+window.returnToMainMenu = returnToMainMenu;
+
 // Gestionnaire d'événements pour les boutons de mode de jeu
-document.querySelectorAll('.game-mode-btn').forEach(button => {
-    button.addEventListener('click', () => {
-        const mode = button.dataset.mode;
-        startGame(mode);
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('DOM chargé, initialisation des boutons...');
+    document.querySelectorAll('.game-mode-btn').forEach(button => {
+        button.addEventListener('click', () => {
+            const mode = button.dataset.mode;
+            console.log('Mode sélectionné:', mode);
+            startGame(mode);
+        });
     });
 });
 
 // Fonction pour démarrer un jeu
 function startGame(mode) {
+    console.log('Démarrage du jeu en mode:', mode);
     const gameArea = document.querySelector('.game-area');
     const modeSelection = document.querySelector('.home-hero');
     
@@ -45,10 +54,10 @@ function startGame(mode) {
         case 'truth-dare':
             initTruthDareGame();
             break;
+        default:
+            console.error('Mode de jeu inconnu:', mode);
     }
 }
-
-window.startGame = startGame;
 
 // Fonction pour mélanger un tableau (algorithme de Fisher-Yates)
 function shuffleArray(array) {
@@ -130,11 +139,13 @@ async function startQuizWithCount(questionCount) {
         let currentQuestionIndex = 0;
         let score = 0;
         let timerInterval;
+        let isAnswerSelected = false;
 
         const nextBtn = document.querySelector('.next-btn');
         nextBtn.addEventListener('click', () => {
-            currentQuestionIndex++;
-            if (currentQuestionIndex < questions.length) {
+            if (currentQuestionIndex < questions.length - 1) {
+                currentQuestionIndex++;
+                isAnswerSelected = false;
                 displayQuestion(currentQuestionIndex);
                 nextBtn.style.display = 'none';
             } else {
@@ -145,32 +156,45 @@ async function startQuizWithCount(questionCount) {
         function displayQuestion(index) {
             const question = questions[index];
             document.querySelector('.question-bubble .question').textContent = question.question;
+            document.getElementById('current-question').textContent = (index + 1);
+            
             const answersContainer = document.querySelector('.answers');
             answersContainer.innerHTML = question.answers.map((answer, i) => `
                 <button class="answer-btn" data-index="${i}" type="button" tabindex="-1">${answer}</button>
             `).join('');
+
             // Forcer le blur sur tous les boutons pour éviter tout focus automatique
             setTimeout(() => {
                 document.querySelectorAll('.answer-btn').forEach(btn => btn.blur());
             }, 30);
+
+            // Ajouter les event listeners une seule fois
             document.querySelectorAll('.answer-btn').forEach(btn => {
-                btn.addEventListener('click', handleAnswer);
+                btn.addEventListener('click', handleAnswer, { once: true });
             });
+
             // Blur aussi après le rendu de la page (mobile)
             setTimeout(() => {
                 document.querySelectorAll('.answer-btn').forEach(btn => btn.blur());
             }, 200);
+
             const timeDisplay = document.getElementById('time');
             timeDisplay.textContent = gameModes.quiz.timePerQuestion;
             if (timerInterval) clearInterval(timerInterval);
             timerInterval = startTimer(gameModes.quiz.timePerQuestion, timeDisplay, () => {
-                showCorrectAnswer();
+                if (!isAnswerSelected) {
+                    showCorrectAnswer();
+                }
             });
         }
 
         function handleAnswer(event) {
+            if (isAnswerSelected) return;
+            isAnswerSelected = true;
+            
             const selectedIndex = parseInt(event.target.dataset.index);
             const question = questions[currentQuestionIndex];
+            
             document.querySelectorAll('.answer-btn').forEach((btn, i) => {
                 btn.disabled = true;
                 if (i === question.correctAnswer) {
@@ -180,14 +204,20 @@ async function startQuizWithCount(questionCount) {
                     btn.classList.add('wrong');
                 }
             });
+            
             if (selectedIndex === question.correctAnswer) {
                 score++;
             }
+            
+            flashEffect(selectedIndex === question.correctAnswer);
             if (timerInterval) clearInterval(timerInterval);
             nextBtn.style.display = 'block';
         }
 
         function showCorrectAnswer() {
+            if (isAnswerSelected) return;
+            isAnswerSelected = true;
+            
             const question = questions[currentQuestionIndex];
             document.querySelectorAll('.answer-btn').forEach((btn, i) => {
                 btn.disabled = true;
@@ -199,7 +229,6 @@ async function startQuizWithCount(questionCount) {
         }
 
         function showResults() {
-            // Corrige le compteur pour ne jamais dépasser le nombre total de questions
             const totalQuestions = questions.length;
             const questionsAnswered = Math.min(currentQuestionIndex + 1, totalQuestions);
             const percentage = totalQuestions > 0 ? Math.round((score / questionsAnswered) * 100) : 0;
@@ -284,10 +313,8 @@ async function startPhotoGameWithCount(questionCount) {
         // Mélanger les défis
         challenges = shuffleArray(challenges);
         
-        // Limiter le nombre de défis si nécessaire
-        if (challenges.length > questionCount) {
-            challenges = challenges.slice(0, questionCount);
-        }
+        // Limiter le nombre de défis
+        challenges = challenges.slice(0, questionCount);
 
         const gameArea = document.querySelector('.game-area');
         gameArea.innerHTML = `
@@ -308,86 +335,99 @@ async function startPhotoGameWithCount(questionCount) {
         let currentQuestionIndex = 0;
         let score = 0;
         let timerInterval;
+        let isAnswerSelected = false;
 
         const nextBtn = document.querySelector('.next-btn');
-        nextBtn.addEventListener('click', () => {
-            currentQuestionIndex++;
-            if (currentQuestionIndex < challenges.length) {
-                displayQuestion(currentQuestionIndex);
-                nextBtn.style.display = 'none';
-            } else {
-                showResults();
-            }
-        });
+        const quitBtn = document.querySelector('.quit-btn');
 
         function displayQuestion(index) {
+            isAnswerSelected = false;
             const challenge = challenges[index];
+            
+            // Mettre à jour l'image
             const photoElement = document.querySelector('.mystery-photo');
             photoElement.src = challenge.image;
             photoElement.alt = "Photo à deviner";
             
+            // Mettre à jour les réponses
             const answersContainer = document.querySelector('.answers');
             answersContainer.innerHTML = challenge.answers.map((answer, i) => `
-                <button class="answer-btn" data-index="${i}" type="button" tabindex="-1">${answer}</button>
+                <button class="answer-btn" data-index="${i}">${answer}</button>
             `).join('');
 
-            // Forcer le blur sur tous les boutons pour éviter tout focus automatique
-            setTimeout(() => {
-                document.querySelectorAll('.answer-btn').forEach(btn => btn.blur());
-            }, 30);
-
+            // Ajouter les event listeners
             document.querySelectorAll('.answer-btn').forEach(btn => {
                 btn.addEventListener('click', handleAnswer);
             });
 
-            // Blur aussi après le rendu de la page (mobile)
-            setTimeout(() => {
-                document.querySelectorAll('.answer-btn').forEach(btn => btn.blur());
-            }, 200);
+            // Mettre à jour le compteur
+            document.getElementById('current-question').textContent = (index + 1);
 
+            // Réinitialiser le timer
             const timeDisplay = document.getElementById('time');
             timeDisplay.textContent = gameModes.photos.timePerQuestion;
             if (timerInterval) clearInterval(timerInterval);
             timerInterval = startTimer(gameModes.photos.timePerQuestion, timeDisplay, () => {
-                showCorrectAnswer();
+                if (!isAnswerSelected) {
+                    showCorrectAnswer();
+                }
             });
         }
 
         function handleAnswer(event) {
+            if (isAnswerSelected) return;
+            isAnswerSelected = true;
+
             const selectedIndex = parseInt(event.target.dataset.index);
             const challenge = challenges[currentQuestionIndex];
-            document.querySelectorAll('.answer-btn').forEach((btn, i) => {
+
+            // Désactiver tous les boutons
+            document.querySelectorAll('.answer-btn').forEach(btn => {
                 btn.disabled = true;
-                if (i === challenge.correctAnswer) {
+                const btnIndex = parseInt(btn.dataset.index);
+                if (btnIndex === challenge.correctAnswer) {
                     btn.classList.add('correct');
-                }
-                if (i === selectedIndex && i !== challenge.correctAnswer) {
+                } else if (btnIndex === selectedIndex) {
                     btn.classList.add('wrong');
                 }
             });
+
+            // Mettre à jour le score
             if (selectedIndex === challenge.correctAnswer) {
                 score++;
             }
+
+            // Effet visuel
+            flashEffect(selectedIndex === challenge.correctAnswer);
+
+            // Arrêter le timer
             if (timerInterval) clearInterval(timerInterval);
+
+            // Afficher le bouton suivant
             nextBtn.style.display = 'block';
         }
 
         function showCorrectAnswer() {
+            if (isAnswerSelected) return;
+            isAnswerSelected = true;
+
             const challenge = challenges[currentQuestionIndex];
-            document.querySelectorAll('.answer-btn').forEach((btn, i) => {
+            document.querySelectorAll('.answer-btn').forEach(btn => {
                 btn.disabled = true;
-                if (i === challenge.correctAnswer) {
+                if (parseInt(btn.dataset.index) === challenge.correctAnswer) {
                     btn.classList.add('correct');
                 }
             });
+
+            if (timerInterval) clearInterval(timerInterval);
             nextBtn.style.display = 'block';
         }
 
         function showResults() {
             const totalQuestions = challenges.length;
             const questionsAnswered = Math.min(currentQuestionIndex + 1, totalQuestions);
-            const percentage = totalQuestions > 0 ? Math.round((score / questionsAnswered) * 100) : 0;
-            
+            const percentage = Math.round((score / questionsAnswered) * 100);
+
             gameArea.innerHTML = `
                 <div class="results-container">
                     <div class="results-header">
@@ -413,16 +453,25 @@ async function startPhotoGameWithCount(questionCount) {
             `;
         }
 
-        // Modifier l'événement sur le bouton Quitter
-        document.querySelector('.quit-btn').addEventListener('click', () => {
-            showResults();
+        // Gestionnaire pour le bouton suivant
+        nextBtn.addEventListener('click', () => {
+            if (currentQuestionIndex < challenges.length - 1) {
+                currentQuestionIndex++;
+                displayQuestion(currentQuestionIndex);
+                nextBtn.style.display = 'none';
+            } else {
+                showResults();
+            }
         });
+
+        // Gestionnaire pour le bouton quitter
+        quitBtn.addEventListener('click', showResults);
 
         // Démarrer avec la première question
         displayQuestion(currentQuestionIndex);
 
     } catch (error) {
-        console.error('Erreur lors du chargement des photos:', error);
+        console.error('Erreur:', error);
         gameArea.innerHTML = `
             <div class="error-container">
                 <h2>Erreur</h2>
@@ -534,10 +583,22 @@ function startTimer(duration, displayElement, onComplete) {
 }
 
 // Fonction pour revenir au menu principal
-window.returnToMainMenu = function() {
+function returnToMainMenu() {
     const gameArea = document.querySelector('.game-area');
     const modeSelection = document.querySelector('.home-hero');
     
     gameArea.style.display = 'none';
     modeSelection.style.display = 'block';
+}
+
+// Fonction utilitaire pour effet visuel de clignotement
+function flashEffect(isCorrect) {
+    const gameArea = document.querySelector('.game-area');
+    if (!gameArea) return;
+    gameArea.classList.remove('flash-correct', 'flash-wrong');
+    void gameArea.offsetWidth; // Force reflow pour rejouer l'animation
+    gameArea.classList.add(isCorrect ? 'flash-correct' : 'flash-wrong');
+    setTimeout(() => {
+        gameArea.classList.remove('flash-correct', 'flash-wrong');
+    }, 500);
 } 

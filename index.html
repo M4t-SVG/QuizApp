@@ -35,20 +35,18 @@
         </footer>
     </div>
     <div class="game-area" style="display:none;"></div>
-    <script src="js/app.js" type="module"></script>
+    <script src="js/app.js"></script>
     <script>
-      document.addEventListener('DOMContentLoaded', function() {
-        document.querySelectorAll('.game-mode-card').forEach(btn => {
-          btn.addEventListener('click', function() {
-            const mode = btn.dataset.mode;
-            if (typeof startGame === 'function') {
-              startGame(mode);
-            } else if (window.startGame) {
-              window.startGame(mode);
-            }
-          });
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialiser les boutons de mode de jeu
+            document.querySelectorAll('.game-mode-card').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const mode = this.dataset.mode;
+                    console.log('Mode sélectionné:', mode); // Debug
+                    startGame(mode);
+                });
+            });
         });
-      });
     </script>
 </body>
 </html> 

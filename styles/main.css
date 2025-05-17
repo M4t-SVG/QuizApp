@@ -1104,7 +1104,7 @@ body.accueil .mode-selection {
 
 .results-title, .results-row.highlight .results-label, .results-row.highlight .results-value {
     color: #fff !important;
-}
+} 
 
 /* Styles pour le quiz photo */
 .photo-question-block {
@@ -1180,4 +1180,24 @@ body.accueil .mode-selection {
 
 .photo-game-container .game-modes-cards {
     margin-top: 3.2rem;
+}
+
+@keyframes flash-green {
+  0%, 100% { background: none; }
+  20%, 80% { background: rgba(0, 255, 0, 0.18); }
+  40%, 60% { background: rgba(0, 255, 0, 0.32); }
+}
+
+@keyframes flash-red {
+  0%, 100% { background: none; }
+  20%, 80% { background: rgba(255, 0, 0, 0.18); }
+  40%, 60% { background: rgba(255, 0, 0, 0.32); }
+}
+
+.game-area.flash-correct {
+  animation: flash-green 0.5s;
+}
+
+.game-area.flash-wrong {
+  animation: flash-red 0.5s;
 } 
