@@ -59,8 +59,25 @@ function shuffleArray(array) {
     return array;
 }
 
+// Fonction pour charger les données depuis un fichier JSON
+async function loadJsonData(filePath) {
+    try {
+        const response = await fetch(filePath);
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return await response.json();
+    } catch (error) {
+        console.error('Erreur lors du chargement des données:', error);
+        return null;
+    }
+}
+
 // Fonction pour initialiser le jeu Quiz
 async function initQuizGame() {
+    const data = await loadJsonData('data/questions.json');
+    if (!data) return;
+    
     const gameArea = document.querySelector('.game-area');
     gameArea.innerHTML = `
         <div class="quiz-container fade-in">
@@ -233,7 +250,10 @@ async function startQuizWithCount(questionCount) {
 }
 
 // Fonction pour initialiser le jeu Photos
-function initPhotoGame() {
+async function initPhotoGame() {
+    const data = await loadJsonData('data/questions.json');
+    if (!data) return;
+    
     const gameArea = document.querySelector('.game-area');
     gameArea.innerHTML = `
         <div class="photo-game-container fade-in">
@@ -256,30 +276,168 @@ function initPhotoGame() {
 }
 
 async function startPhotoGameWithCount(questionCount) {
-    const gameArea = document.querySelector('.game-area');
-    gameArea.innerHTML = `
-        <div class="photo-game-container">
-            <h2 class="quiz-title">Devinette Photo</h2>
+    try {
+        const response = await fetch('data/questions.json');
+        const data = await response.json();
+        let challenges = [...data.photos.challenges];
+        
+        // Mélanger les défis
+        challenges = shuffleArray(challenges);
+        
+        // Limiter le nombre de défis si nécessaire
+        if (challenges.length > questionCount) {
+            challenges = challenges.slice(0, questionCount);
+        }
+
+        const gameArea = document.querySelector('.game-area');
+        gameArea.innerHTML = `
+            <h2 class="quiz-title" style="text-align:center; width:100%; margin-top:1.2rem;">${gameModes.photos.title}</h2>
             <div class="quiz-status-bar">
-                ⏱️ <span id="time">--</span> s
-                <span class="progress-bar-inline">Photo <span id="current-photo">1</span>/${questionCount}</span>
+                ⏱️ <span id="time">${gameModes.photos.timePerQuestion}</span> s &nbsp;|&nbsp; Photo <span id="current-question">1</span>/${questionCount}
             </div>
             <div class="photo-question-block">
                 <img src="" alt="Photo à deviner" class="mystery-photo">
-                <div class="hints"></div>
-                <div class="answer-input">
-                    <input type="text" placeholder="Votre réponse...">
-                    <button class="submit-answer">Valider</button>
-                </div>
+                <div class="answers"></div>
             </div>
-            <button class="quit-btn">Terminer le jeu</button>
-        </div>
-    `;
-    // TODO: Logique du jeu photo à compléter
+            <div class="quiz-actions">
+                <button class="next-btn" style="display: none;">Photo suivante</button>
+                <button class="quit-btn" style="display: block;">Quitter le quiz</button>
+            </div>
+        `;
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let timerInterval;
+
+        const nextBtn = document.querySelector('.next-btn');
+        nextBtn.addEventListener('click', () => {
+            currentQuestionIndex++;
+            if (currentQuestionIndex < challenges.length) {
+                displayQuestion(currentQuestionIndex);
+                nextBtn.style.display = 'none';
+            } else {
+                showResults();
+            }
+        });
+
+        function displayQuestion(index) {
+            const challenge = challenges[index];
+            const photoElement = document.querySelector('.mystery-photo');
+            photoElement.src = challenge.image;
+            photoElement.alt = "Photo à deviner";
+            
+            const answersContainer = document.querySelector('.answers');
+            answersContainer.innerHTML = challenge.answers.map((answer, i) => `
+                <button class="answer-btn" data-index="${i}" type="button" tabindex="-1">${answer}</button>
+            `).join('');
+
+            // Forcer le blur sur tous les boutons pour éviter tout focus automatique
+            setTimeout(() => {
+                document.querySelectorAll('.answer-btn').forEach(btn => btn.blur());
+            }, 30);
+
+            document.querySelectorAll('.answer-btn').forEach(btn => {
+                btn.addEventListener('click', handleAnswer);
+            });
+
+            // Blur aussi après le rendu de la page (mobile)
+            setTimeout(() => {
+                document.querySelectorAll('.answer-btn').forEach(btn => btn.blur());
+            }, 200);
+
+            const timeDisplay = document.getElementById('time');
+            timeDisplay.textContent = gameModes.photos.timePerQuestion;
+            if (timerInterval) clearInterval(timerInterval);
+            timerInterval = startTimer(gameModes.photos.timePerQuestion, timeDisplay, () => {
+                showCorrectAnswer();
+            });
+        }
+
+        function handleAnswer(event) {
+            const selectedIndex = parseInt(event.target.dataset.index);
+            const challenge = challenges[currentQuestionIndex];
+            document.querySelectorAll('.answer-btn').forEach((btn, i) => {
+                btn.disabled = true;
+                if (i === challenge.correctAnswer) {
+                    btn.classList.add('correct');
+                }
+                if (i === selectedIndex && i !== challenge.correctAnswer) {
+                    btn.classList.add('wrong');
+                }
+            });
+            if (selectedIndex === challenge.correctAnswer) {
+                score++;
+            }
+            if (timerInterval) clearInterval(timerInterval);
+            nextBtn.style.display = 'block';
+        }
+
+        function showCorrectAnswer() {
+            const challenge = challenges[currentQuestionIndex];
+            document.querySelectorAll('.answer-btn').forEach((btn, i) => {
+                btn.disabled = true;
+                if (i === challenge.correctAnswer) {
+                    btn.classList.add('correct');
+                }
+            });
+            nextBtn.style.display = 'block';
+        }
+
+        function showResults() {
+            const totalQuestions = challenges.length;
+            const questionsAnswered = Math.min(currentQuestionIndex + 1, totalQuestions);
+            const percentage = totalQuestions > 0 ? Math.round((score / questionsAnswered) * 100) : 0;
+            
+            gameArea.innerHTML = `
+                <div class="results-container">
+                    <div class="results-header">
+                        <span class="results-icon">🎉</span>
+                        <h2 class="results-title">Quiz photo terminé !</h2>
+                    </div>
+                    <div class="results-summary">
+                        <div class="results-row">
+                            <span class="results-label">Photos devinées</span>
+                            <span class="results-value">${questionsAnswered} / ${totalQuestions}</span>
+                        </div>
+                        <div class="results-row">
+                            <span class="results-label">Score</span>
+                            <span class="results-value">${score} / ${questionsAnswered}</span>
+                        </div>
+                        <div class="results-row highlight">
+                            <span class="results-label">Pourcentage de réussite</span>
+                            <span class="results-value">${percentage}%</span>
+                        </div>
+                    </div>
+                    <button class="menu-btn" onclick="returnToMainMenu()">Retour au menu</button>
+                </div>
+            `;
+        }
+
+        // Modifier l'événement sur le bouton Quitter
+        document.querySelector('.quit-btn').addEventListener('click', () => {
+            showResults();
+        });
+
+        // Démarrer avec la première question
+        displayQuestion(currentQuestionIndex);
+
+    } catch (error) {
+        console.error('Erreur lors du chargement des photos:', error);
+        gameArea.innerHTML = `
+            <div class="error-container">
+                <h2>Erreur</h2>
+                <p>Impossible de charger les photos. Veuillez réessayer.</p>
+                <button onclick="returnToMainMenu()">Retour au menu</button>
+            </div>
+        `;
+    }
 }
 
 // Fonction pour initialiser le jeu Action/Vérité
-function initTruthDareGame() {
+async function initTruthDareGame() {
+    const data = await loadJsonData('data/questions.json');
+    if (!data) return;
+    
     const gameArea = document.querySelector('.game-area');
     gameArea.innerHTML = `
         <div class="truth-dare-container fade-in">

@@ -1104,4 +1104,71 @@ body.accueil .mode-selection {
 
 .results-title, .results-row.highlight .results-label, .results-row.highlight .results-value {
     color: #fff !important;
+}
+
+/* Styles pour le quiz photo */
+.photo-question-block {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2rem;
+    padding: 1rem;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.mystery-photo {
+    width: 100%;
+    height: 400px;
+    object-fit: cover;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+}
+
+.mystery-photo:hover {
+    transform: scale(1.02);
+}
+
+.photo-question-block .answers {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    width: 100%;
+    max-width: 600px;
+}
+
+.photo-question-block .answer-btn {
+    padding: 1rem;
+    font-size: 1.1rem;
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.photo-question-block .answer-btn:hover {
+    background: var(--primary-color-dark);
+    transform: translateY(-2px);
+}
+
+.photo-question-block .answer-btn.correct {
+    background: var(--success-color);
+}
+
+.photo-question-block .answer-btn.wrong {
+    background: var(--error-color);
+}
+
+/* Responsive design pour les photos */
+@media (max-width: 768px) {
+    .mystery-photo {
+        height: 300px;
+    }
+    
+    .photo-question-block .answers {
+        grid-template-columns: 1fr;
+    }
 } 
