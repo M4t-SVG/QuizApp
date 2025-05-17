@@ -12,6 +12,7 @@
         <header>
             <h1><span class="party-emoji">🎉</span> Quiz Party</h1>
             <p class="slogan">Le jeu parfait pour animer ta soirée !</p>
+            <button id="sound-toggle" class="sound-btn" title="Activer/Désactiver le son">🔊</button>
         </header>
         <div class="game-modes-cards">
             <button class="game-mode-card" data-mode="quiz">
@@ -35,6 +36,7 @@
         </footer>
     </div>
     <div class="game-area" style="display:none;"></div>
+    <script src="js/sounds.js"></script>
     <script src="js/app.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -45,6 +47,13 @@
                     console.log('Mode sélectionné:', mode); // Debug
                     startGame(mode);
                 });
+            });
+
+            // Gestionnaire pour le bouton de son
+            const soundToggle = document.getElementById('sound-toggle');
+            soundToggle.addEventListener('click', function() {
+                const isMuted = window.soundManager.toggleMute();
+                this.textContent = isMuted ? '🔇' : '🔊';
             });
         });
     </script>

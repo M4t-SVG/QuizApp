@@ -1882,4 +1882,22 @@ body.accueil .mode-selection {
 }
 .flash-overlay.flash-warning {
     animation: flash-yellow 1s infinite;
+}
+
+/* Style pour le bouton de son */
+.sound-btn {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 50%;
+    transition: background-color 0.3s;
+}
+
+.sound-btn:hover {
+    background-color: rgba(255, 255, 255, 0.1);
 } 

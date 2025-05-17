@@ -31,6 +31,8 @@ document.addEventListener('DOMContentLoaded', function() {
             startGame(mode);
         });
     });
+    // Lancer la musique de fond dès l'arrivée sur la page principale
+    window.soundManager.playBackground();
 });
 
 // Fonction pour démarrer un jeu
@@ -42,6 +44,9 @@ function startGame(mode) {
     // Cacher la sélection de mode et afficher la zone de jeu
     modeSelection.style.display = 'none';
     gameArea.style.display = 'block';
+    
+    // Démarrer la musique de fond
+    window.soundManager.playBackground();
     
     // Initialiser le jeu selon le mode choisi
     switch(mode) {
@@ -106,6 +111,7 @@ async function initQuizGame() {
             <button class="menu-btn" onclick="returnToMainMenu()">Retour au menu</button>
         </div>
     `;
+    window.soundManager.setupMenuButtonSounds();
 
     document.querySelectorAll('.mode-btn').forEach(btn => {
         btn.addEventListener('click', () => {
@@ -113,6 +119,8 @@ async function initQuizGame() {
             showQuestionCountSelection(mode);
         });
     });
+
+    addQuitButtonClickSound();
 }
 
 function showQuestionCountSelection(gameMode) {
@@ -131,6 +139,7 @@ function showQuestionCountSelection(gameMode) {
             <button class="menu-btn" onclick="returnToMainMenu()">Retour au menu</button>
         </div>
     `;
+    window.soundManager.setupMenuButtonSounds();
 
     document.querySelectorAll('.count-btn').forEach(btn => {
         btn.addEventListener('click', async () => {
@@ -138,6 +147,8 @@ function showQuestionCountSelection(gameMode) {
             await startQuizWithCount(questionCount, gameMode);
         });
     });
+
+    addQuitButtonClickSound();
 }
 
 async function startQuizWithCount(questionCount, gameMode) {
@@ -271,6 +282,9 @@ async function startQuizWithCount(questionCount, gameMode) {
             });
             if (selectedIndex === question.correctAnswer) {
                 score++;
+                window.soundManager.playCorrect();
+            } else {
+                window.soundManager.playWrong();
             }
             flashEffect(selectedIndex === question.correctAnswer);
             if (timerInterval) clearInterval(timerInterval);
@@ -298,6 +312,9 @@ async function startQuizWithCount(questionCount, gameMode) {
             const questionsAnswered = Math.min(currentQuestionIndex + 1, totalQuestions);
             const percentage = totalQuestions > 0 ? Math.round((score / questionsAnswered) * 100) : 0;
             
+            // Jouer le son de résultats
+            window.soundManager.playResults();
+            
             gameArea.innerHTML = `
                 <div class="results-container">
                   <div class="results-header">
@@ -321,6 +338,8 @@ async function startQuizWithCount(questionCount, gameMode) {
                   <button class="menu-btn" onclick="returnToMainMenu()">Retour au menu</button>
                 </div>
             `;
+            window.soundManager.setupMenuButtonSounds();
+            addQuitButtonClickSound();
         }
 
         // Initialisation
@@ -360,12 +379,15 @@ async function initPhotoGame() {
             <button class="menu-btn" onclick="returnToMainMenu()">Retour au menu</button>
         </div>
     `;
+    window.soundManager.setupMenuButtonSounds();
     document.querySelectorAll('.count-btn').forEach(btn => {
         btn.addEventListener('click', async () => {
             const questionCount = parseInt(btn.dataset.count);
             await startPhotoGameWithCount(questionCount);
         });
     });
+
+    addQuitButtonClickSound();
 }
 
 async function startPhotoGameWithCount(questionCount) {
@@ -395,6 +417,7 @@ async function startPhotoGameWithCount(questionCount) {
                 <button class="quit-btn" style="display: block;">Quitter le quiz</button>
             </div>
         `;
+        window.soundManager.setupMenuButtonSounds();
 
         let currentQuestionIndex = 0;
         let score = 0;
@@ -441,6 +464,7 @@ async function startPhotoGameWithCount(questionCount) {
                 </div>
                 ${splitScreenHTML}
             `;
+            window.soundManager.setupMenuButtonSounds();
 
             // Ajouter les event listeners
             document.querySelectorAll('.answer-btn').forEach(btn => {
@@ -496,6 +520,9 @@ async function startPhotoGameWithCount(questionCount) {
             // Mettre à jour le score
             if (isCorrect) {
                 score++;
+                window.soundManager.playCorrect();
+            } else {
+                window.soundManager.playWrong();
             }
 
             // Effet visuel
@@ -529,6 +556,9 @@ async function startPhotoGameWithCount(questionCount) {
             const questionsAnswered = Math.min(currentQuestionIndex + 1, totalQuestions);
             const percentage = Math.round((score / questionsAnswered) * 100);
 
+            // Jouer le son de résultats
+            window.soundManager.playResults();
+
             gameArea.innerHTML = `
                 <div class="results-container">
                     <div class="results-header">
@@ -552,6 +582,8 @@ async function startPhotoGameWithCount(questionCount) {
                     <button class="menu-btn" onclick="returnToMainMenu()">Retour au menu</button>
                 </div>
             `;
+            window.soundManager.setupMenuButtonSounds();
+            addQuitButtonClickSound();
         }
 
         // Démarrer avec la première question
@@ -598,12 +630,15 @@ async function initTruthDareGame() {
             <button class="menu-btn" onclick="returnToMainMenu()">Retour au menu</button>
         </div>
     `;
+    window.soundManager.setupMenuButtonSounds();
     document.querySelectorAll('.game-mode-card').forEach(btn => {
         btn.addEventListener('click', () => {
             const selectedMode = btn.dataset.mode;
             showTruthDareCountSelection(selectedMode);
         });
     });
+
+    addQuitButtonClickSound();
 }
 
 function showTruthDareCountSelection(selectedMode) {
@@ -623,12 +658,15 @@ function showTruthDareCountSelection(selectedMode) {
             <button class="menu-btn" onclick="returnToMainMenu()">Retour au menu</button>
         </div>
     `;
+    window.soundManager.setupMenuButtonSounds();
     document.querySelectorAll('.count-btn').forEach(btn => {
         btn.addEventListener('click', async () => {
             const questionCount = parseInt(btn.dataset.count);
             await startTruthDareWithCount(questionCount, selectedMode);
         });
     });
+
+    addQuitButtonClickSound();
 }
 
 async function startTruthDareWithCount(questionCount, selectedMode) {
@@ -683,11 +721,18 @@ function flashEffect(isCorrect) {
 function startTimer(duration, displayElement, onComplete) {
     let timer = duration;
     const overlay = getFlashOverlay();
+    let timerLoopStarted = false;
     const countdown = setInterval(() => {
         displayElement.textContent = timer;
         // Effet warning global
-        if (timer <= 10 && !overlay.classList.contains('flash-warning')) {
-            overlay.classList.add('flash-warning');
+        if (timer <= 10 && timer > 0) {
+            if (!overlay.classList.contains('flash-warning')) {
+                overlay.classList.add('flash-warning');
+            }
+            if (!timerLoopStarted) {
+                window.soundManager.playTimerLoop();
+                timerLoopStarted = true;
+            }
         } else if (timer > 10 && overlay.classList.contains('flash-warning')) {
             overlay.classList.remove('flash-warning');
         }
@@ -696,6 +741,7 @@ function startTimer(duration, displayElement, onComplete) {
             if (overlay.classList.contains('flash-warning')) {
                 overlay.classList.remove('flash-warning');
             }
+            window.soundManager.stopTimerLoop();
             if (onComplete) onComplete();
         }
     }, 1000);
@@ -707,6 +753,18 @@ function returnToMainMenu() {
     const gameArea = document.querySelector('.game-area');
     const modeSelection = document.querySelector('.home-hero');
     
+    // Démarrer la musique de fond (si elle n'est pas déjà en cours)
+    window.soundManager.playBackground();
+    
     gameArea.style.display = 'none';
     modeSelection.style.display = 'block';
+}
+
+// Ajout du son de clic sur tous les boutons 'Quitter le quiz' après chaque rendu dynamique
+function addQuitButtonClickSound() {
+    document.querySelectorAll('.quit-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            window.soundManager.playClick();
+        });
+    });
 } 
