@@ -35,6 +35,14 @@ document.addEventListener('DOMContentLoaded', function() {
     window.soundManager.playBackground();
 });
 
+// === VARIABLES GLOBALES POUR LE QUIZ CULTURE GENERALE ===
+let currentQuestionIndex = 0;
+let score = 0;
+let timerInterval;
+let isAnswerSelected = false;
+let questions = [];
+let quizGameMode = '';
+
 // Fonction pour démarrer un jeu
 function startGame(mode) {
     console.log('Démarrage du jeu en mode:', mode);
@@ -155,202 +163,42 @@ async function startQuizWithCount(questionCount, gameMode) {
     try {
         const response = await fetch('data/questions.json');
         const data = await response.json();
-        let questions = [...data.quiz.questions];
-        
+        questions = [...data.quiz.questions];
         // Mélanger les questions
         questions = shuffleArray(questions);
-        
         // Limiter le nombre de questions si nécessaire
         if (questions.length > questionCount) {
             questions = questions.slice(0, questionCount);
         }
+        quizGameMode = gameMode;
+        currentQuestionIndex = 0;
+        score = 0;
+        isAnswerSelected = false;
 
         const gameArea = document.querySelector('.game-area');
         const modeLabel = gameMode === 'master' ? 'Maître du jeu' : 'Passe à ton voisin';
-        
+
         function renderQuizQuestionScreen(index) {
             gameArea.innerHTML = `
                 <h2 class="quiz-title">${gameModes.quiz.title} - ${modeLabel}</h2>
                 <div class="quiz-status-bar">
-                    ⏱️ <span id="time">${gameModes.quiz.timePerQuestion}</span> s &nbsp;|&nbsp; Question <span id="current-question">${index+1}</span>/${questionCount}
+                    ⏱️ <span id="time">${gameModes.quiz.timePerQuestion}</span> s &nbsp;|&nbsp; Question <span id="current-question">${index+1}</span>/${questions.length}
                 </div>
                 <div class="question-bubble"><span class="question">Chargement de la question...</span></div>
                 <div class="answers"></div>
                 <div class="quiz-actions">
                     <button class="next-btn" style="display: none;">Question suivante</button>
-                    <button class="quit-btn" style="display: block;">Quitter le quiz</button>
+                    <button class="quit-btn">Quitter le quiz</button>
                 </div>
             `;
             displayQuestion(index);
-            // Réattacher le listener du bouton quitter
-            const quitBtn = document.querySelector('.quit-btn');
-            if (quitBtn) {
-                quitBtn.onclick = showResults;
-            }
-        }
-
-        let currentQuestionIndex = 0;
-        let score = 0;
-        let timerInterval;
-        let isAnswerSelected = false;
-
-        const nextBtnHandler = () => {
-            if (currentQuestionIndex < questions.length - 1) {
-                currentQuestionIndex++;
-                isAnswerSelected = false;
-                if (gameMode === 'pass') {
-                    showPassPhoneScreen(currentQuestionIndex, questions.length, () => renderQuizQuestionScreen(currentQuestionIndex));
-                } else {
-                    renderQuizQuestionScreen(currentQuestionIndex);
-                }
-            } else {
-                showResults();
-            }
-        };
-
-        function showPassPhoneScreen(currentQuestionIndex, totalQuestions, onContinue) {
-            const gameArea = document.querySelector('.game-area');
-            const currentNum = currentQuestionIndex + 1;
-            gameArea.innerHTML = `
-                <div class="pass-phone-screen fade-in">
-                    <div class="big-question-label fade-in-delay0">Question ${currentNum} / ${totalQuestions}</div>
-                    <span class="phone-emoji bounce-in">📱</span>
-                    <h2 class="pass-title fade-in-delay1">Passe le téléphone au joueur suivant !</h2>
-                    <button class="next-btn fade-in-delay2">Continuer</button>
-                </div>
-            `;
-            document.querySelector('.next-btn').addEventListener('click', () => {
-                if (typeof onContinue === 'function') onContinue();
-            });
-        }
-
-        function displayQuestion(index) {
-            isAnswerSelected = false;
-            const question = questions[index];
-            document.querySelector('.question-bubble .question').textContent = question.question;
-            document.getElementById('current-question').textContent = (index + 1);
-            
-            const answersContainer = document.querySelector('.answers');
-            answersContainer.innerHTML = question.answers.map((answer, i) => `
-                <button class="answer-btn" data-index="${i}" type="button" tabindex="-1">${answer}</button>
-            `).join('');
-
-            // Forcer le blur sur tous les boutons pour éviter tout focus automatique
-            setTimeout(() => {
-                document.querySelectorAll('.answer-btn').forEach(btn => btn.blur());
-            }, 30);
-
-            // Ajouter les event listeners une seule fois
-            document.querySelectorAll('.answer-btn').forEach(btn => {
-                btn.addEventListener('click', handleAnswer, { once: true });
-            });
-
-            // Blur aussi après le rendu de la page (mobile)
-            setTimeout(() => {
-                document.querySelectorAll('.answer-btn').forEach(btn => btn.blur());
-            }, 200);
-
-            const timeDisplay = document.getElementById('time');
-            timeDisplay.textContent = gameModes.quiz.timePerQuestion;
-            if (timerInterval) clearInterval(timerInterval);
-            timerInterval = startTimer(gameModes.quiz.timePerQuestion, timeDisplay, () => {
-                if (!isAnswerSelected) {
-                    showCorrectAnswer();
-                }
-            });
-
-            // Réattacher le handler du bouton suivant
-            const nextBtn = document.querySelector('.next-btn');
-            if (nextBtn) {
-                nextBtn.onclick = nextBtnHandler;
-            }
-        }
-
-        function handleAnswer(event) {
-            if (isAnswerSelected) return;
-            isAnswerSelected = true;
-            const selectedIndex = parseInt(event.target.dataset.index);
-            const question = questions[currentQuestionIndex];
-            document.querySelectorAll('.answer-btn').forEach((btn, i) => {
-                btn.disabled = true;
-                if (i === question.correctAnswer) {
-                    btn.classList.add('correct');
-                }
-                if (i === selectedIndex && i !== question.correctAnswer) {
-                    btn.classList.add('wrong');
-                }
-            });
-            if (selectedIndex === question.correctAnswer) {
-                score++;
-                window.soundManager.playCorrect();
-            } else {
-                window.soundManager.playWrong();
-            }
-            flashEffect(selectedIndex === question.correctAnswer);
-            if (timerInterval) clearInterval(timerInterval);
-            const nextBtn = document.querySelector('.next-btn');
-            if (nextBtn) nextBtn.style.display = 'block';
-        }
-
-        function showCorrectAnswer() {
-            if (isAnswerSelected) return;
-            isAnswerSelected = true;
-            
-            const question = questions[currentQuestionIndex];
-            document.querySelectorAll('.answer-btn').forEach((btn, i) => {
-                btn.disabled = true;
-                if (i === question.correctAnswer) {
-                    btn.classList.add('correct');
-                }
-            });
-            const nextBtn = document.querySelector('.next-btn');
-            if (nextBtn) nextBtn.style.display = 'block';
-        }
-
-        function showResults() {
-            const totalQuestions = questions.length;
-            const questionsAnswered = Math.min(currentQuestionIndex + 1, totalQuestions);
-            const percentage = totalQuestions > 0 ? Math.round((score / questionsAnswered) * 100) : 0;
-            
-            // Jouer le son de résultats
-            window.soundManager.playResults();
-            
-            gameArea.innerHTML = `
-                <div class="results-container">
-                  <div class="results-header">
-                    <span class="results-icon">🎉</span>
-                    <h2 class="results-title">Quiz terminé !</h2>
-                  </div>
-                  <div class="results-summary">
-                    <div class="results-row">
-                      <span class="results-label">Questions répondues</span>
-                      <span class="results-value">${questionsAnswered} / ${totalQuestions}</span>
-                    </div>
-                    <div class="results-row">
-                      <span class="results-label">Score</span>
-                      <span class="results-value">${score} / ${questionsAnswered}</span>
-                    </div>
-                    <div class="results-row highlight">
-                      <span class="results-label">Pourcentage de réussite</span>
-                      <span class="results-value">${percentage}%</span>
-                    </div>
-                  </div>
-                  <button class="menu-btn" onclick="returnToMainMenu()">Retour au menu</button>
-                </div>
-            `;
-            window.soundManager.setupMenuButtonSounds();
-            addQuitButtonClickSound();
         }
 
         // Initialisation
         renderQuizQuestionScreen(currentQuestionIndex);
-        // Bouton quitter
-        document.querySelector('.quit-btn').addEventListener('click', () => {
-            showResults();
-        });
-
     } catch (error) {
         console.error('Erreur lors du chargement des questions:', error);
+        const gameArea = document.querySelector('.game-area');
         gameArea.innerHTML = `
             <div class="error-container">
                 <h2>Erreur</h2>
@@ -359,6 +207,150 @@ async function startQuizWithCount(questionCount, gameMode) {
             </div>
         `;
     }
+}
+
+// === FONCTIONS DE GESTION DU QUIZ (UTILISENT LES VARIABLES GLOBALES) ===
+function displayQuestion(index) {
+    isAnswerSelected = false;
+    const question = questions[index];
+    document.querySelector('.question-bubble .question').textContent = question.question;
+    document.getElementById('current-question').textContent = (index + 1);
+    const answersContainer = document.querySelector('.answers');
+    answersContainer.innerHTML = question.answers.map((answer, i) => `
+        <button class="answer-btn" data-index="${i}" type="button" tabindex="-1">${answer}</button>
+    `).join('');
+    setTimeout(() => {
+        document.querySelectorAll('.answer-btn').forEach(btn => btn.blur());
+    }, 30);
+    document.querySelectorAll('.answer-btn').forEach(btn => {
+        btn.addEventListener('click', handleAnswer, { once: true });
+    });
+    setTimeout(() => {
+        document.querySelectorAll('.answer-btn').forEach(btn => btn.blur());
+    }, 200);
+    if (timerInterval) {
+        clearInterval(timerInterval);
+        const overlay = getFlashOverlay();
+        overlay.classList.remove('flash-warning');
+        window.soundManager.stopTimerLoop();
+    }
+    const timeDisplay = document.getElementById('time');
+    timeDisplay.textContent = gameModes.quiz.timePerQuestion;
+    timerInterval = startTimer(gameModes.quiz.timePerQuestion, timeDisplay, () => {
+        if (!isAnswerSelected) {
+            showCorrectAnswer();
+        }
+    });
+    // Bouton suivante
+    const nextBtn = document.querySelector('.next-btn');
+    if (nextBtn) {
+        nextBtn.onclick = () => {
+            if (currentQuestionIndex < questions.length - 1) {
+                currentQuestionIndex++;
+                if (quizGameMode === 'pass') {
+                    showPassPhoneScreen(currentQuestionIndex, questions.length, () => displayQuestion(currentQuestionIndex));
+                } else {
+                    displayQuestion(currentQuestionIndex);
+                }
+            } else {
+                showResults();
+            }
+        };
+    }
+    // Bouton quitter
+    const quitBtn = document.querySelector('.quit-btn');
+    if (quitBtn) {
+        quitBtn.onclick = showResults;
+    }
+}
+
+function handleAnswer(event) {
+    if (isAnswerSelected) return;
+    isAnswerSelected = true;
+    const selectedIndex = parseInt(event.target.dataset.index);
+    const question = questions[currentQuestionIndex];
+    document.querySelectorAll('.answer-btn').forEach((btn, i) => {
+        btn.disabled = true;
+        if (i === question.correctAnswer) {
+            btn.classList.add('correct');
+        }
+        if (i === selectedIndex && i !== question.correctAnswer) {
+            btn.classList.add('wrong');
+        }
+    });
+    if (selectedIndex === question.correctAnswer) {
+        score++;
+        window.soundManager.playCorrect();
+    } else {
+        window.soundManager.playWrong();
+    }
+    flashEffect(selectedIndex === question.correctAnswer);
+    if (timerInterval) clearInterval(timerInterval);
+    const nextBtn = document.querySelector('.next-btn');
+    if (nextBtn) nextBtn.style.display = 'block';
+}
+
+function showCorrectAnswer() {
+    if (isAnswerSelected) return;
+    isAnswerSelected = true;
+    const question = questions[currentQuestionIndex];
+    document.querySelectorAll('.answer-btn').forEach((btn, i) => {
+        btn.disabled = true;
+        if (i === question.correctAnswer) {
+            btn.classList.add('correct');
+        }
+    });
+    const nextBtn = document.querySelector('.next-btn');
+    if (nextBtn) nextBtn.style.display = 'block';
+}
+
+function showResults() {
+    const totalQuestions = questions.length;
+    const questionsAnswered = Math.min(currentQuestionIndex + 1, totalQuestions);
+    const percentage = totalQuestions > 0 ? Math.round((score / questionsAnswered) * 100) : 0;
+    window.soundManager.playResults();
+    const gameArea = document.querySelector('.game-area');
+    gameArea.innerHTML = `
+        <div class="results-container">
+          <div class="results-header">
+            <span class="results-icon">🎉</span>
+            <h2 class="results-title">Quiz terminé !</h2>
+          </div>
+          <div class="results-summary">
+            <div class="results-row">
+              <span class="results-label">Questions répondues</span>
+              <span class="results-value">${questionsAnswered} / ${totalQuestions}</span>
+            </div>
+            <div class="results-row">
+              <span class="results-label">Score</span>
+              <span class="results-value">${score} / ${questionsAnswered}</span>
+            </div>
+            <div class="results-row highlight">
+              <span class="results-label">Pourcentage de réussite</span>
+              <span class="results-value">${percentage}%</span>
+            </div>
+          </div>
+          <button class="menu-btn" onclick="returnToMainMenu()">Retour au menu</button>
+        </div>
+    `;
+    window.soundManager.setupMenuButtonSounds();
+    addQuitButtonClickSound();
+}
+
+function showPassPhoneScreen(currentQuestionIndex, totalQuestions, onContinue) {
+    const gameArea = document.querySelector('.game-area');
+    const currentNum = currentQuestionIndex + 1;
+    gameArea.innerHTML = `
+        <div class="pass-phone-screen fade-in">
+            <div class="big-question-label fade-in-delay0">Question ${currentNum} / ${totalQuestions}</div>
+            <span class="phone-emoji bounce-in">📱</span>
+            <h2 class="pass-title fade-in-delay1">Passe le téléphone au joueur suivant !</h2>
+            <button class="next-btn fade-in-delay2">Continuer</button>
+        </div>
+    `;
+    document.querySelector('.next-btn').addEventListener('click', () => {
+        if (typeof onContinue === 'function') onContinue();
+    });
 }
 
 // Fonction pour initialiser le jeu Photos
@@ -709,9 +701,13 @@ function getFlashOverlay() {
 // Fonction utilitaire pour effet visuel de clignotement
 function flashEffect(isCorrect) {
     const overlay = getFlashOverlay();
+    // Supprimer toutes les classes d'animation existantes
     overlay.classList.remove('flash-correct', 'flash-wrong', 'flash-warning');
-    void overlay.offsetWidth; // Force reflow pour rejouer l'animation
+    // Forcer un reflow pour réinitialiser l'animation
+    void overlay.offsetWidth;
+    // Ajouter la nouvelle classe d'animation
     overlay.classList.add(isCorrect ? 'flash-correct' : 'flash-wrong');
+    // Supprimer la classe après l'animation
     setTimeout(() => {
         overlay.classList.remove('flash-correct', 'flash-wrong');
     }, 500);
@@ -722,27 +718,41 @@ function startTimer(duration, displayElement, onComplete) {
     let timer = duration;
     const overlay = getFlashOverlay();
     let timerLoopStarted = false;
+    
+    // Nettoyer l'ancien timer et son effet
+    if (timerInterval) {
+        clearInterval(timerInterval);
+        overlay.classList.remove('flash-warning');
+        window.soundManager.stopTimerLoop();
+    }
+
     const countdown = setInterval(() => {
         displayElement.textContent = timer;
         // Effet warning global
         if (timer <= 10 && timer > 0) {
-            if (!overlay.classList.contains('flash-warning')) {
-                overlay.classList.add('flash-warning');
-            }
+            overlay.classList.add('flash-warning');
             if (!timerLoopStarted) {
                 window.soundManager.playTimerLoop();
                 timerLoopStarted = true;
             }
-        } else if (timer > 10 && overlay.classList.contains('flash-warning')) {
+        } else {
             overlay.classList.remove('flash-warning');
+            if (timerLoopStarted) {
+                window.soundManager.stopTimerLoop();
+                timerLoopStarted = false;
+            }
         }
         if (--timer < 0) {
             clearInterval(countdown);
-            if (overlay.classList.contains('flash-warning')) {
-                overlay.classList.remove('flash-warning');
+            overlay.classList.remove('flash-warning');
+            if (timerLoopStarted) {
+                window.soundManager.stopTimerLoop();
+                timerLoopStarted = false;
             }
-            window.soundManager.stopTimerLoop();
             if (onComplete) onComplete();
+            // Afficher le bouton suivant quand le timer arrive à 0
+            const nextBtn = document.querySelector('.next-btn');
+            if (nextBtn) nextBtn.style.display = 'block';
         }
     }, 1000);
     return countdown;
