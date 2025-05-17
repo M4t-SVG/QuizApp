@@ -1171,4 +1171,13 @@ body.accueil .mode-selection {
     .photo-question-block .answers {
         grid-template-columns: 1fr;
     }
+}
+
+/* Ajout d'un espace sous le titre de la page Devinette Photo */
+.photo-game-container .quiz-title {
+    margin-bottom: 3.2rem;
+}
+
+.photo-game-container .game-modes-cards {
+    margin-top: 3.2rem;
 } 
