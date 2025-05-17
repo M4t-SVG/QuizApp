@@ -99,13 +99,8 @@ async function startQuizWithCount(questionCount) {
         const gameArea = document.querySelector('.game-area');
         gameArea.innerHTML = `
             <h2 class="quiz-title" style="text-align:center; width:100%; margin-top:1.2rem;">${gameModes.quiz.title}</h2>
-            <div class="quiz-status-bar" style="display:flex; justify-content:center; align-items:center; gap:1.2rem; flex-wrap:nowrap; margin-bottom:1.2rem;">
-                <span class="timer" style="display:flex; align-items:center; gap:0.3rem; font-weight:600; font-size:1.1rem; background:rgba(255,255,255,0.13); padding:0.5rem 1.1rem; border-radius:18px; white-space:nowrap;">
-                    ⏱️ <span id="time">${gameModes.quiz.timePerQuestion}</span> s
-                </span>
-                <span class="progress-bar-inline" style="font-weight:600; font-size:1.1rem; background:rgba(255,255,255,0.13); padding:0.5rem 1.1rem; border-radius:18px; white-space:nowrap;">
-                    Question <span id="current-question">1</span>/${questionCount}
-                </span>
+            <div class="quiz-status-bar">
+                ⏱️ <span id="time">${gameModes.quiz.timePerQuestion}</span> s &nbsp;|&nbsp; Question <span id="current-question">1</span>/${questionCount}
             </div>
             <div class="question-bubble"><span class="question">Chargement de la question...</span></div>
             <div class="answers"></div>
