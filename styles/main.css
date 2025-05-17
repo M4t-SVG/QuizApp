@@ -1,0 +1,948 @@
+:root {
+    --primary-color: #8A2BE2; /* Violet vif */
+    --secondary-color: #FF6B6B; /* Orange corail */
+    --accent-color: #FFD700; /* Or */
+    --background-color: #4B0082; /* Indigo foncé */
+    --text-color: #FFFFFF; /* Blanc */
+    --error-color: #FF4444; /* Rouge vif */
+    --success-color: #00C851; /* Vert vif */
+    --button-hover: #9B4DCA; /* Violet plus clair */
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: var(--background-color);
+    color: var(--text-color);
+    line-height: 1.6;
+    background-image: 
+        radial-gradient(circle at 10% 20%, rgba(138, 43, 226, 0.2) 0%, transparent 20%),
+        radial-gradient(circle at 90% 80%, rgba(255, 107, 107, 0.2) 0%, transparent 20%);
+    background-attachment: fixed;
+}
+
+.app-container {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: stretch;
+}
+
+.app-header {
+    background-color: var(--primary-color);
+    color: var(--text-color);
+    padding: 1rem;
+    text-align: center;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-bottom: 0.1rem;
+}
+
+.app-header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(45deg, transparent 45%, rgba(255,255,255,0.1) 50%, transparent 55%);
+    animation: shine 3s infinite;
+}
+
+@keyframes shine {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+}
+
+.app-header h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    margin: 0;
+}
+
+.game-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    padding-top: 0.2rem;
+    padding-bottom: 0.5rem;
+}
+
+.mode-selection {
+    text-align: center;
+    margin: 2rem 0;
+}
+
+.mode-selection h2 {
+    margin-bottom: 1.5rem;
+    color: var(--text-color);
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+}
+
+.game-modes {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: 1fr;
+}
+
+/* Animations pour les boutons */
+@keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-5px); }
+}
+
+@keyframes clickBounce {
+    0% { transform: scale(1); }
+    50% { transform: scale(0.95); }
+    100% { transform: scale(1); }
+}
+
+.game-mode-btn {
+    background-color: var(--text-color);
+    border: none;
+    border-radius: 25px;
+    padding: 0.8rem 1.5rem;
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: var(--primary-color);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    position: relative;
+    overflow: hidden;
+    animation: bounce 2s infinite;
+}
+
+.game-mode-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255,255,255,0.2),
+        transparent
+    );
+    transition: 0.5s;
+}
+
+.game-mode-btn:hover {
+    background-color: var(--button-hover);
+    color: var(--text-color);
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+    animation: none;
+}
+
+.game-mode-btn:hover::before {
+    left: 100%;
+}
+
+.game-mode-btn:active {
+    animation: clickBounce 0.3s ease;
+}
+
+.game-mode-btn .icon {
+    font-size: 1.5rem;
+}
+
+.game-area {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    width: 100vw;
+    max-width: 100vw;
+    min-width: 0;
+    margin: 0;
+    padding: 0 3vw;
+    box-sizing: border-box;
+}
+
+.app-footer {
+    background-color: var(--primary-color);
+    color: var(--text-color);
+    text-align: center;
+    padding: 1rem;
+    margin-top: auto;
+    box-shadow: 0 -4px 15px rgba(0,0,0,0.2);
+}
+
+/* Media Queries pour les écrans plus larges */
+@media (min-width: 768px) {
+    .game-modes {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .app-header h1 {
+        font-size: 2.5rem;
+    }
+
+    .game-container {
+        padding: 2rem;
+    }
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.fade-in {
+    animation: fadeIn 0.5s ease-out;
+}
+
+/* Styles pour les éléments de jeu */
+.timer {
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: rgba(138, 43, 226, 0.3);
+    color: var(--text-color);
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-weight: bold;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    backdrop-filter: blur(5px);
+    border: 1px solid rgba(255,255,255,0.1);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.timer::before {
+    content: '⏱️';
+    font-size: 1.2rem;
+}
+
+.question-container, .photo-container, .challenge-container {
+    background-color: rgba(255,255,255,0.1);
+    padding: 1.5rem;
+    border-radius: 20px;
+    margin: 1rem 0;
+    backdrop-filter: blur(5px);
+}
+
+.question-container {
+    background: none !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+    padding: 0 !important;
+    margin: 1.2rem 0 0.5rem 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.quiz-header-row {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: rgba(75, 0, 130, 0.98); /* même couleur que le fond principal, légèrement opaque */
+    box-shadow: 0 2px 12px rgba(0,0,0,0.10);
+    padding-top: 0rem;
+    padding-bottom: 0rem;
+    padding-left: 12px;
+    padding-right: 12px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    max-width: 700px;
+    margin-bottom: 0.1rem;
+    gap: 1.2rem;
+}
+
+.quiz-title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #fff;
+    text-shadow: 1px 1px 8px rgba(0,0,0,0.10);
+    margin: 0.1rem 0 0.1rem 0;
+    flex: 1;
+    text-align: left;
+}
+
+.quiz-header-row .quit-btn {
+    margin: 0;
+    width: auto;
+    min-width: unset;
+    max-width: 220px;
+    padding: 0.7rem 1.2rem;
+    font-size: 1.1rem;
+    border-radius: 16px;
+    font-weight: 600;
+}
+
+.question-bubble {
+    background: #fff;
+    color: var(--primary-color);
+    font-size: 6vw;
+    font-weight: 700;
+    border-radius: 30px;
+    box-shadow: 0 6px 32px rgba(0,0,0,0.13);
+    padding: 2rem 2rem;
+    margin-bottom: 2rem;
+    text-align: center;
+    max-width: 100vw;
+    width: 100%;
+    letter-spacing: 0.01em;
+    line-height: 1.1;
+    transition: background 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 0;
+    margin-right: 0;
+    border: 3px solid var(--primary-color);
+    min-height: 120px;
+    height: auto;
+    word-break: break-word;
+    white-space: normal;
+}
+
+@media (max-width: 600px) {
+    .game-area {
+        padding: 0 1vw;
+    }
+    .question-bubble {
+        font-size: 1.15rem;
+        padding: 1rem 0.5rem;
+        max-width: 100vw;
+    }
+}
+
+button, .count-btn, .menu-btn, .mode-btn, .game-mode-btn, .next-btn, .quit-btn {
+    background: linear-gradient(90deg, var(--primary-color) 0%, #a259ec 100%);
+    color: #fff;
+    border: none;
+    border-radius: 18px;
+    padding: 1rem 1.5rem;
+    font-size: 1.15rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.10);
+    outline: none;
+    margin: 0.3rem 0;
+    width: auto;
+    min-width: 0;
+    max-width: 100%;
+    display: block;
+    text-align: center;
+}
+
+button:hover, .count-btn:hover, .menu-btn:hover, .mode-btn:hover, .game-mode-btn:hover, .next-btn:hover, .quit-btn:hover {
+    background: var(--accent-color);
+    color: var(--primary-color);
+    box-shadow: 0 4px 24px rgba(0,0,0,0.13);
+}
+
+/* Désactiver l'animation de rebond sur certains boutons spécifiques */
+.timer, .skip-btn {
+    animation: none;
+}
+
+/* Ajustement pour les écrans mobiles */
+@media (max-width: 768px) {
+    .app-header {
+        flex-direction: column;
+        padding: 1rem 0.5rem;
+    }
+
+    .timer {
+        position: relative;
+        right: auto;
+        top: auto;
+        transform: none;
+        margin-top: 0.5rem;
+        font-size: 0.9rem;
+    }
+}
+
+/* Styles pour le quiz */
+.answers {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+    width: 100%;
+    max-width: 100vw;
+    align-items: center;
+    margin-bottom: 2rem;
+    margin-left: 0;
+    margin-right: 0;
+}
+
+.answer-btn {
+    background: linear-gradient(90deg, var(--primary-color) 0%, #a259ec 100%);
+    color: #fff;
+    border: none;
+    border-radius: 18px;
+    padding: 1rem 0.5rem;
+    font-size: 1.15rem;
+    font-weight: 700;
+    width: 95%;
+    max-width: 420px;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.10);
+    transition: all 0.2s;
+    text-align: center;
+    outline: none;
+    margin-left: 0;
+    margin-right: 0;
+    letter-spacing: 0.01em;
+}
+
+.answer-btn:nth-child(even) {
+    background: linear-gradient(90deg, var(--primary-color) 0%, #a259ec 100%);
+    color: #fff;
+    border: none;
+}
+
+.answer-btn:hover {
+    background: var(--accent-color);
+    color: #fff;
+    border-color: var(--accent-color);
+    transform: scale(1.03);
+    box-shadow: 0 4px 24px rgba(0,0,0,0.13);
+}
+
+.answer-btn:focus {
+    outline: none;
+    box-shadow: none;
+    background: inherit;
+    color: inherit;
+}
+
+.answer-btn.correct {
+    background: var(--success-color) !important;
+    color: #fff !important;
+    border: none !important;
+    box-shadow: 0 2px 16px rgba(0,200,81,0.18);
+}
+
+.answer-btn.wrong {
+    background-color: var(--error-color) !important;
+    color: #fff !important;
+    border: 2px solid var(--error-color) !important;
+}
+
+.answer-btn:disabled {
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+.results-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 70vh;
+    max-width: 420px;
+    margin: 2.5rem auto 0 auto;
+    padding: 2.2rem 1.2rem 2rem 1.2rem;
+    background: rgba(138, 43, 226, 0.13);
+    border-radius: 32px;
+    box-shadow: 0 8px 32px rgba(138,43,226,0.10), 0 1.5px 8px rgba(0,0,0,0.10);
+    backdrop-filter: blur(10px);
+    text-align: center;
+}
+
+.results-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 1.2rem;
+}
+
+.results-icon {
+    font-size: 2.7rem;
+    margin-bottom: 0.2rem;
+}
+
+.results-title {
+    color: var(--accent-color);
+    font-size: 2.1rem;
+    font-weight: 900;
+    margin-bottom: 0.2rem;
+    text-shadow: 1px 1px 8px rgba(0,0,0,0.13);
+}
+
+.results-summary {
+    width: 100%;
+    margin-bottom: 2.2rem;
+}
+
+.results-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 1.25rem;
+    color: #fff;
+    margin: 0.7rem 0;
+    padding: 0.5rem 0.2rem;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+
+.results-row:last-child {
+    border-bottom: none;
+}
+
+.results-row.highlight .results-label,
+.results-row.highlight .results-value {
+    color: var(--accent-color);
+    font-size: 1.45rem;
+    font-weight: 800;
+}
+
+.results-label {
+    text-align: left;
+    font-weight: 500;
+}
+
+.results-value {
+    text-align: right;
+    font-weight: 700;
+}
+
+.menu-btn {
+    margin-top: 0.5rem;
+}
+
+/* Styles pour les options du quiz */
+.quiz-options {
+    text-align: center;
+    padding: 2rem;
+}
+
+.quiz-options h3 {
+    margin-bottom: 1.5rem;
+    color: var(--text-color);
+    font-size: 1.3rem;
+}
+
+.question-count-buttons {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+.count-btn {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: var(--text-color);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 1rem;
+    border-radius: 15px;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(5px);
+}
+
+.count-btn:hover {
+    background-color: var(--button-hover);
+    transform: translateY(-2px);
+}
+
+/* Barre de progression */
+.progress-bar {
+    background-color: rgba(255, 255, 255, 0.1);
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    margin: 1rem 0;
+    text-align: center;
+    font-weight: bold;
+    backdrop-filter: blur(5px);
+}
+
+/* Bouton Quitter */
+.quit-btn {
+    display: block;
+    margin: 1.2rem auto 0 auto;
+    background-color: var(--error-color);
+    color: #fff;
+    border: none;
+    border-radius: 20px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    padding: 0.7rem 1.5rem;
+    width: auto;
+    text-align: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.10);
+    transition: background 0.2s;
+}
+
+.quit-btn:hover {
+    background-color: #ff3333;
+    color: #fff;
+}
+
+/* Ajustements pour les écrans mobiles */
+@media (max-width: 768px) {
+    .question-count-buttons {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Résultats simplifiés */
+.results-simple {
+    background: rgba(138, 43, 226, 0.15);
+    border-radius: 20px;
+    padding: 2rem 1rem 1.5rem 1rem;
+    margin: 2rem auto 0 auto;
+    max-width: 350px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.12);
+    text-align: center;
+    color: var(--text-color);
+}
+
+.results-title {
+    color: var(--accent-color);
+    font-size: 1.7rem;
+    margin-bottom: 1.2rem;
+    text-shadow: 1px 1px 4px rgba(0,0,0,0.15);
+}
+
+.results-simple p {
+    font-size: 1.1rem;
+    margin: 0.7rem 0;
+}
+
+.results-percentage {
+    color: var(--accent-color);
+    font-weight: bold;
+    font-size: 1.2rem;
+    margin: 1.2rem 0 1.5rem 0;
+}
+
+.results-percentage span {
+    font-size: 1.3rem;
+}
+
+.menu-btn {
+    margin-top: 1.2rem;
+    background: linear-gradient(90deg, var(--primary-color) 0%, #a259ec 100%);
+    color: #fff;
+    border-radius: 18px;
+    padding: 1rem 1.5rem;
+    font-size: 1.15rem;
+    font-weight: 700;
+    border: none;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.10);
+    transition: all 0.2s;
+    width: auto;
+    min-width: 0;
+    max-width: 100%;
+    display: block;
+    text-align: center;
+}
+
+.menu-btn:hover {
+    background: var(--accent-color);
+    color: var(--primary-color);
+    box-shadow: 0 4px 24px rgba(0,0,0,0.13);
+}
+
+/* Centrage vertical et horizontal des interfaces de jeu et résultats */
+.quiz-container, .results-simple, .photo-game-container, .truth-dare-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    min-height: 60vh;
+    margin: 0 auto;
+    box-sizing: border-box;
+}
+
+/* Pour éviter les marges inutiles sur mobile */
+@media (max-width: 600px) {
+    .game-container {
+        padding: 0.5rem;
+    }
+    .quiz-container, .results-simple, .photo-game-container, .truth-dare-container {
+        min-height: 70vh;
+        padding: 0.5rem;
+    }
+}
+
+.quiz-status-row {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 1.2rem;
+    margin-bottom: 1.2rem;
+    margin-top: 0.5rem;
+    flex-wrap: nowrap;
+    width: 100%;
+    max-width: 400px;
+}
+
+.quiz-status-row .timer,
+.quiz-status-row .progress-bar-inline {
+    background: rgba(138, 43, 226, 0.18);
+    color: var(--text-color);
+    padding: 0.5rem 1.1rem;
+    border-radius: 18px;
+    font-weight: bold;
+    font-size: 1.05rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    white-space: nowrap;
+}
+
+.quiz-status-row .timer {
+    border: 1.5px solid rgba(255,255,255,0.13);
+}
+
+.quiz-status-row .progress-bar-inline {
+    border: 1.5px solid rgba(255,255,255,0.10);
+}
+
+@media (max-width: 400px) {
+    .quiz-status-row {
+        flex-direction: column;
+        gap: 0.5rem;
+        max-width: 98vw;
+    }
+}
+
+.photo-game-container, .truth-dare-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    min-height: 60vh;
+    margin: 0 auto;
+    box-sizing: border-box;
+}
+
+.photo-question-block, .truth-dare-block {
+    background: rgba(138, 43, 226, 0.15);
+    border-radius: 20px;
+    padding: 1.5rem 1rem;
+    margin: 1.2rem 0;
+    width: 100%;
+    max-width: 400px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.10);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.mystery-photo {
+    width: 100%;
+    max-width: 260px;
+    border-radius: 16px;
+    margin-bottom: 1rem;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.10);
+    background: #fff2;
+}
+
+.hints {
+    margin-bottom: 1rem;
+    color: var(--accent-color);
+    font-size: 1.05rem;
+    text-align: center;
+}
+
+.answer-input {
+    display: flex;
+    gap: 0.5rem;
+    width: 100%;
+    justify-content: center;
+    margin-bottom: 0.5rem;
+}
+
+.answer-input input[type="text"] {
+    flex: 1;
+    padding: 0.7rem 1rem;
+    border-radius: 15px;
+    border: 1px solid rgba(255,255,255,0.15);
+    font-size: 1rem;
+    background: rgba(255,255,255,0.12);
+    color: var(--text-color);
+}
+
+.answer-input button {
+    padding: 0.7rem 1.2rem;
+    border-radius: 15px;
+    font-size: 1rem;
+    font-weight: 500;
+}
+
+.truth-dare-block {
+    min-height: 120px;
+    justify-content: center;
+}
+
+.challenge-text {
+    font-size: 1.2rem;
+    color: var(--text-color);
+    margin-bottom: 1.2rem;
+    text-align: center;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    margin-bottom: 1rem;
+}
+
+.action-buttons button {
+    border-radius: 15px;
+    padding: 0.7rem 1.2rem;
+    font-size: 1rem;
+    font-weight: 500;
+}
+
+.quit-btn {
+    background-color: var(--error-color);
+    color: var(--text-color);
+    margin-top: 1.2rem;
+    width: 100%;
+    max-width: 400px;
+    border-radius: 20px;
+    font-size: 1.1rem;
+    font-weight: bold;
+}
+
+.quit-btn:hover {
+    background-color: #ff3333;
+}
+
+@media (max-width: 600px) {
+    .photo-question-block, .truth-dare-block {
+        padding: 1rem 0.3rem;
+        max-width: 98vw;
+    }
+    .mystery-photo {
+        max-width: 98vw;
+    }
+}
+
+.quiz-status-bar {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    background: rgba(138, 43, 226, 0.18);
+    border-radius: 18px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    padding: 0.5rem 1.2rem;
+    margin: 1.2rem auto 1.2rem auto;
+    width: 100%;
+    max-width: 400px;
+    min-height: 44px;
+    gap: 0.5rem;
+    font-weight: 500;
+    font-size: 1.08rem;
+    color: var(--text-color);
+}
+
+.quiz-status-bar .progress-bar-inline {
+    font-weight: 500;
+    font-size: 1.08rem;
+    color: var(--text-color);
+    white-space: nowrap;
+    line-height: 1.2;
+    height: 1.8em;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding: 0;
+    margin: 0;
+    background: none;
+    box-shadow: none;
+    border-radius: 0;
+    flex: 1;
+}
+
+.quiz-status-bar span#time {
+    margin-right: 0.2em;
+}
+
+@media (max-width: 400px) {
+    .quiz-status-bar {
+        flex-direction: column;
+        gap: 0.3rem;
+        max-width: 98vw;
+        align-items: stretch;
+    }
+    .quiz-status-bar .progress-bar-inline {
+        justify-content: flex-start;
+    }
+}
+
+.question-bubble, .answers, .answer-btn {
+    max-width: 100vw;
+    min-width: 0;
+    margin-left: 0;
+    margin-right: 0;
+}
+
+@media (max-width: 600px) {
+    .game-area {
+        padding: 0 1vw;
+    }
+    .question-bubble, .answers, .answer-btn {
+        max-width: 100vw;
+    }
+}
+
+/* Ajout d'un conteneur pour les boutons d'action du quiz */
+.quiz-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.7rem;
+    margin-top: 0.5rem;
+}
+
+.next-btn, .quit-btn {
+    width: auto;
+    min-width: 0;
+    max-width: 100%;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 0.5rem 1.6rem;
+    text-align: center;
+}
+
+/* Centrage vertical du menu d'accueil uniquement */
+body.accueil .mode-selection {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+} 

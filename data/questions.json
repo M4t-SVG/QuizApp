@@ -1,0 +1,1244 @@
+{
+    "quiz": {
+        "questions": [
+            {
+                "id": 1,
+                "question": "Quelle est la capitale de la France ?",
+                "answers": [
+                    "Paris",
+                    "Lyon",
+                    "Marseille",
+                    "Bordeaux"
+                ],
+                "correctAnswer": 0,
+                "explanation": "Paris est la capitale de la France depuis le Moyen Âge."
+            },
+            {
+                "id": 2,
+                "question": "Qui a peint la Joconde ?",
+                "answers": [
+                    "Vincent van Gogh",
+                    "Pablo Picasso",
+                    "Léonard de Vinci",
+                    "Michel-Ange"
+                ],
+                "correctAnswer": 2,
+                "explanation": "La Joconde a été peinte par Léonard de Vinci au début du XVIe siècle."
+            },
+            {
+                "id": 3,
+                "question": "Quel est le plus grand océan du monde ?",
+                "answers": [
+                    "Océan Atlantique",
+                    "Océan Pacifique",
+                    "Océan Indien",
+                    "Océan Arctique"
+                ],
+                "correctAnswer": 1,
+                "explanation": "L'océan Pacifique est le plus grand océan du monde, couvrant environ 165 millions de km²."
+            },
+            {
+                "id": 4,
+                "question": "Combien y a-t-il de continents sur Terre ?",
+                "answers": [
+                    "5",
+                    "6",
+                    "7",
+                    "8"
+                ],
+                "correctAnswer": 2,
+                "explanation": "Il y a 7 continents : Afrique, Amérique du Nord, Amérique du Sud, Antarctique, Asie, Europe, Océanie."
+            },
+            {
+                "id": 5,
+                "question": "Quel est l'élément chimique dont le symbole est O ?",
+                "answers": [
+                    "Or",
+                    "Oxygène",
+                    "Osmium",
+                    "Ozone"
+                ],
+                "correctAnswer": 1,
+                "explanation": "O est le symbole de l'oxygène."
+            },
+            {
+                "id": 6,
+                "question": "Dans quel pays se trouve la ville de Kyoto ?",
+                "answers": [
+                    "Chine",
+                    "Corée du Sud",
+                    "Japon",
+                    "Thaïlande"
+                ],
+                "correctAnswer": 2,
+                "explanation": "Kyoto est une ville du Japon."
+            },
+            {
+                "id": 7,
+                "question": "Quel est le plus long fleuve du monde ?",
+                "answers": [
+                    "Nil",
+                    "Amazone",
+                    "Yangtsé",
+                    "Mississippi"
+                ],
+                "correctAnswer": 1,
+                "explanation": "L'Amazone est le plus long fleuve du monde."
+            },
+            {
+                "id": 8,
+                "question": "Qui a écrit 'Le Petit Prince' ?",
+                "answers": [
+                    "Victor Hugo",
+                    "Antoine de Saint-Exupéry",
+                    "Jules Verne",
+                    "Albert Camus"
+                ],
+                "correctAnswer": 1,
+                "explanation": "Le Petit Prince a été écrit par Antoine de Saint-Exupéry."
+            },
+            {
+                "id": 9,
+                "question": "Quelle planète est la plus proche du Soleil ?",
+                "answers": [
+                    "Vénus",
+                    "Terre",
+                    "Mercure",
+                    "Mars"
+                ],
+                "correctAnswer": 2,
+                "explanation": "Mercure est la planète la plus proche du Soleil."
+            },
+            {
+                "id": 10,
+                "question": "Combien de joueurs y a-t-il dans une équipe de football ?",
+                "answers": [
+                    "9",
+                    "10",
+                    "11",
+                    "12"
+                ],
+                "correctAnswer": 2,
+                "explanation": "Une équipe de football compte 11 joueurs sur le terrain."
+            },
+            {
+                "id": 11,
+                "question": "Quel est le symbole chimique du fer ?",
+                "answers": [
+                    "Fe",
+                    "Ir",
+                    "Fr",
+                    "Fi"
+                ],
+                "correctAnswer": 0,
+                "explanation": "Le symbole du fer est Fe."
+            },
+            {
+                "id": 12,
+                "question": "Dans quelle ville se trouve la statue du Christ Rédempteur ?",
+                "answers": [
+                    "Buenos Aires",
+                    "Rio de Janeiro",
+                    "Lima",
+                    "Mexico"
+                ],
+                "correctAnswer": 1,
+                "explanation": "La statue du Christ Rédempteur se trouve à Rio de Janeiro."
+            },
+            {
+                "id": 13,
+                "question": "Quel est le plus grand désert du monde ?",
+                "answers": [
+                    "Sahara",
+                    "Gobi",
+                    "Antarctique",
+                    "Kalahari"
+                ],
+                "correctAnswer": 2,
+                "explanation": "Le plus grand désert du monde est l'Antarctique."
+            },
+            {
+                "id": 14,
+                "question": "Qui a inventé l'ampoule électrique ?",
+                "answers": [
+                    "Thomas Edison",
+                    "Nikola Tesla",
+                    "Alexander Graham Bell",
+                    "Benjamin Franklin"
+                ],
+                "correctAnswer": 0,
+                "explanation": "Thomas Edison est souvent crédité de l'invention de l'ampoule électrique."
+            },
+            {
+                "id": 15,
+                "question": "Quel est le pays d'origine du flamenco ?",
+                "answers": [
+                    "Italie",
+                    "Espagne",
+                    "Portugal",
+                    "Grèce"
+                ],
+                "correctAnswer": 1,
+                "explanation": "Le flamenco est originaire d'Espagne."
+            },
+            {
+                "id": 16,
+                "question": "Quel animal est le plus rapide du monde ?",
+                "answers": [
+                    "Guépard",
+                    "Faucon pèlerin",
+                    "Antilope",
+                    "Lion"
+                ],
+                "correctAnswer": 1,
+                "explanation": "Le faucon pèlerin est l'animal le plus rapide en piqué."
+            },
+            {
+                "id": 17,
+                "question": "Quel est le plus grand pays du monde ?",
+                "answers": [
+                    "Canada",
+                    "Chine",
+                    "États-Unis",
+                    "Russie"
+                ],
+                "correctAnswer": 3,
+                "explanation": "La Russie est le plus grand pays du monde."
+            },
+            {
+                "id": 18,
+                "question": "Combien de côtés a un hexagone ?",
+                "answers": [
+                    "5",
+                    "6",
+                    "7",
+                    "8"
+                ],
+                "correctAnswer": 1,
+                "explanation": "Un hexagone a 6 côtés."
+            },
+            {
+                "id": 19,
+                "question": "Quel est l'instrument principal du jazz ?",
+                "answers": [
+                    "Piano",
+                    "Saxophone",
+                    "Guitare",
+                    "Batterie"
+                ],
+                "correctAnswer": 1,
+                "explanation": "Le saxophone est emblématique du jazz."
+            },
+            {
+                "id": 20,
+                "question": "Dans quel océan se trouve Madagascar ?",
+                "answers": [
+                    "Atlantique",
+                    "Indien",
+                    "Pacifique",
+                    "Arctique"
+                ],
+                "correctAnswer": 1,
+                "explanation": "Madagascar est dans l'océan Indien."
+            },
+            {
+                "id": 21,
+                "question": "Quel est le plus haut sommet du monde ?",
+                "answers": [
+                    "Mont Everest",
+                    "Mont Blanc",
+                    "K2",
+                    "Kilimandjaro"
+                ],
+                "correctAnswer": 0,
+                "explanation": "Le mont Everest culmine à 8 848 mètres."
+            },
+            {
+                "id": 22,
+                "question": "Qui a découvert la pénicilline ?",
+                "answers": [
+                    "Louis Pasteur",
+                    "Alexander Fleming",
+                    "Marie Curie",
+                    "Isaac Newton"
+                ],
+                "correctAnswer": 1,
+                "explanation": "La pénicilline a été découverte par Alexander Fleming en 1928."
+            },
+            {
+                "id": 23,
+                "question": "Quel est le plus grand lac d'Afrique ?",
+                "answers": [
+                    "Lac Victoria",
+                    "Lac Tanganyika",
+                    "Lac Malawi",
+                    "Lac Tchad"
+                ],
+                "correctAnswer": 0,
+                "explanation": "Le lac Victoria est le plus grand lac d'Afrique."
+            },
+            {
+                "id": 24,
+                "question": "Dans quel pays se trouve la ville de Marrakech ?",
+                "answers": [
+                    "Tunisie",
+                    "Maroc",
+                    "Algérie",
+                    "Égypte"
+                ],
+                "correctAnswer": 1,
+                "explanation": "Marrakech est une ville du Maroc."
+            },
+            {
+                "id": 25,
+                "question": "Quel est le plus grand mammifère terrestre ?",
+                "answers": [
+                    "Éléphant d'Afrique",
+                    "Baleine bleue",
+                    "Girafe",
+                    "Rhinocéros"
+                ],
+                "correctAnswer": 0,
+                "explanation": "L'éléphant d'Afrique est le plus grand mammifère terrestre."
+            },
+            {
+                "id": 26,
+                "question": "Qui a écrit 'Roméo et Juliette' ?",
+                "answers": [
+                    "William Shakespeare",
+                    "Molière",
+                    "Victor Hugo",
+                    "Jean Racine"
+                ],
+                "correctAnswer": 0,
+                "explanation": "'Roméo et Juliette' est une pièce de William Shakespeare."
+            },
+            {
+                "id": 27,
+                "question": "Quel est le plus grand pays d'Amérique du Sud ?",
+                "answers": [
+                    "Argentine",
+                    "Brésil",
+                    "Pérou",
+                    "Colombie"
+                ],
+                "correctAnswer": 1,
+                "explanation": "Le Brésil est le plus grand pays d'Amérique du Sud."
+            },
+            {
+                "id": 28,
+                "question": "Quel est le métal le plus léger ?",
+                "answers": [
+                    "Aluminium",
+                    "Lithium",
+                    "Fer",
+                    "Plomb"
+                ],
+                "correctAnswer": 1,
+                "explanation": "Le lithium est le métal le plus léger."
+            },
+            {
+                "id": 29,
+                "question": "Dans quel pays se trouve la ville de Sydney ?",
+                "answers": [
+                    "Nouvelle-Zélande",
+                    "Australie",
+                    "Afrique du Sud",
+                    "Canada"
+                ],
+                "correctAnswer": 1,
+                "explanation": "Sydney est une ville d'Australie."
+            },
+            {
+                "id": 30,
+                "question": "Quel est le plus grand océan après le Pacifique ?",
+                "answers": [
+                    "Atlantique",
+                    "Indien",
+                    "Arctique",
+                    "Antarctique"
+                ],
+                "correctAnswer": 0,
+                "explanation": "L'océan Atlantique est le deuxième plus grand océan."
+            },
+            {
+                "id": 31,
+                "question": "Qui a écrit 'Les Misérables' ?",
+                "answers": [
+                    "Émile Zola",
+                    "Victor Hugo",
+                    "Gustave Flaubert",
+                    "Alphonse Daudet"
+                ],
+                "correctAnswer": 1,
+                "explanation": "'Les Misérables' est un roman de Victor Hugo."
+            },
+            {
+                "id": 32,
+                "question": "Quel est le plus grand pays d'Afrique ?",
+                "answers": [
+                    "Égypte",
+                    "Nigéria",
+                    "Algérie",
+                    "Afrique du Sud"
+                ],
+                "correctAnswer": 2,
+                "explanation": "L'Algérie est le plus grand pays d'Afrique."
+            },
+            {
+                "id": 33,
+                "question": "Quel est le plus grand animal marin ?",
+                "answers": [
+                    "Requin blanc",
+                    "Baleine bleue",
+                    "Orque",
+                    "Dauphin"
+                ],
+                "correctAnswer": 1,
+                "explanation": "La baleine bleue est le plus grand animal marin."
+            },
+            {
+                "id": 34,
+                "question": "Dans quel pays se trouve la ville de Venise ?",
+                "answers": [
+                    "Espagne",
+                    "Italie",
+                    "Grèce",
+                    "France"
+                ],
+                "correctAnswer": 1,
+                "explanation": "Venise est une ville d'Italie."
+            },
+            {
+                "id": 35,
+                "question": "Quel est le plus grand archipel du monde ?",
+                "answers": [
+                    "Indonésie",
+                    "Philippines",
+                    "Japon",
+                    "Maldives"
+                ],
+                "correctAnswer": 0,
+                "explanation": "L'Indonésie est le plus grand archipel du monde."
+            },
+            {
+                "id": 36,
+                "question": "Qui a découvert l'Amérique ?",
+                "answers": [
+                    "Christophe Colomb",
+                    "Vasco de Gama",
+                    "Fernand de Magellan",
+                    "James Cook"
+                ],
+                "correctAnswer": 0,
+                "explanation": "Christophe Colomb a découvert l'Amérique en 1492."
+            },
+            {
+                "id": 37,
+                "question": "Quel est le plus grand désert chaud du monde ?",
+                "answers": [
+                    "Sahara",
+                    "Gobi",
+                    "Kalahari",
+                    "Atacama"
+                ],
+                "correctAnswer": 0,
+                "explanation": "Le Sahara est le plus grand désert chaud du monde."
+            },
+            {
+                "id": 38,
+                "question": "Quel est le plus grand pays d'Asie ?",
+                "answers": [
+                    "Chine",
+                    "Inde",
+                    "Russie",
+                    "Japon"
+                ],
+                "correctAnswer": 2,
+                "explanation": "La Russie est le plus grand pays d'Asie (partie asiatique)."
+            },
+            {
+                "id": 39,
+                "question": "Quel est le plus grand lac d'Amérique du Nord ?",
+                "answers": [
+                    "Lac Supérieur",
+                    "Lac Michigan",
+                    "Lac Ontario",
+                    "Lac Huron"
+                ],
+                "correctAnswer": 0,
+                "explanation": "Le lac Supérieur est le plus grand lac d'Amérique du Nord."
+            },
+            {
+                "id": 40,
+                "question": "Dans quel pays se trouve la ville de Prague ?",
+                "answers": [
+                    "Pologne",
+                    "Autriche",
+                    "République tchèque",
+                    "Slovaquie"
+                ],
+                "correctAnswer": 2,
+                "explanation": "Prague est la capitale de la République tchèque."
+            },
+            {
+                "id": 41,
+                "question": "Quel est le plus grand fleuve d'Afrique ?",
+                "answers": [
+                    "Nil",
+                    "Congo",
+                    "Niger",
+                    "Zambèze"
+                ],
+                "correctAnswer": 0,
+                "explanation": "Le Nil est le plus grand fleuve d'Afrique."
+            },
+            {
+                "id": 42,
+                "question": "Qui a écrit 'L'Odyssée' ?",
+                "answers": [
+                    "Homère",
+                    "Sophocle",
+                    "Euripide",
+                    "Platon"
+                ],
+                "correctAnswer": 0,
+                "explanation": "'L'Odyssée' est une épopée d'Homère."
+            },
+            {
+                "id": 43,
+                "question": "Quel est le plus grand pays d'Europe ?",
+                "answers": [
+                    "France",
+                    "Allemagne",
+                    "Ukraine",
+                    "Russie"
+                ],
+                "correctAnswer": 3,
+                "explanation": "La Russie est le plus grand pays d'Europe (partie européenne)."
+            },
+            {
+                "id": 44,
+                "question": "Quel est le plus grand lac d'Europe ?",
+                "answers": [
+                    "Lac Léman",
+                    "Lac Baïkal",
+                    "Lac Ladoga",
+                    "Lac Onega"
+                ],
+                "correctAnswer": 2,
+                "explanation": "Le lac Ladoga est le plus grand lac d'Europe."
+            },
+            {
+                "id": 45,
+                "question": "Dans quel pays se trouve la ville de Casablanca ?",
+                "answers": [
+                    "Maroc",
+                    "Tunisie",
+                    "Algérie",
+                    "Égypte"
+                ],
+                "correctAnswer": 0,
+                "explanation": "Casablanca est une ville du Maroc."
+            },
+            {
+                "id": 46,
+                "question": "Quel est le plus grand désert d'Asie ?",
+                "answers": [
+                    "Gobi",
+                    "Karakoum",
+                    "Thar",
+                    "Taklamakan"
+                ],
+                "correctAnswer": 0,
+                "explanation": "Le désert de Gobi est le plus grand d'Asie."
+            },
+            {
+                "id": 47,
+                "question": "Qui a écrit '1984' ?",
+                "answers": [
+                    "George Orwell",
+                    "Aldous Huxley",
+                    "Ray Bradbury",
+                    "Isaac Asimov"
+                ],
+                "correctAnswer": 0,
+                "explanation": "'1984' est un roman de George Orwell."
+            },
+            {
+                "id": 48,
+                "question": "Quel est le plus grand pays d'Océanie ?",
+                "answers": [
+                    "Australie",
+                    "Nouvelle-Zélande",
+                    "Papouasie-Nouvelle-Guinée",
+                    "Fidji"
+                ],
+                "correctAnswer": 0,
+                "explanation": "L'Australie est le plus grand pays d'Océanie."
+            },
+            {
+                "id": 49,
+                "question": "Quel est le plus grand lac d'Asie ?",
+                "answers": [
+                    "Lac Baïkal",
+                    "Lac Caspienne",
+                    "Lac Aral",
+                    "Lac Balkhach"
+                ],
+                "correctAnswer": 1,
+                "explanation": "La mer Caspienne est le plus grand lac d'Asie."
+            },
+            {
+                "id": 50,
+                "question": "Dans quel pays se trouve la ville de Vienne ?",
+                "answers": [
+                    "Allemagne",
+                    "Autriche",
+                    "Suisse",
+                    "Hongrie"
+                ],
+                "correctAnswer": 1,
+                "explanation": "Vienne est la capitale de l'Autriche."
+            },
+            {
+                "id": 51,
+                "question": "Quel est le plus grand fleuve d'Amérique du Sud ?",
+                "answers": [
+                    "Amazone",
+                    "Paraná",
+                    "Orénoque",
+                    "São Francisco"
+                ],
+                "correctAnswer": 0,
+                "explanation": "L'Amazone est le plus grand fleuve d'Amérique du Sud."
+            },
+            {
+                "id": 52,
+                "question": "Qui a écrit 'Le Comte de Monte-Cristo' ?",
+                "answers": [
+                    "Alexandre Dumas",
+                    "Jules Verne",
+                    "Victor Hugo",
+                    "Émile Zola"
+                ],
+                "correctAnswer": 0,
+                "explanation": "'Le Comte de Monte-Cristo' est un roman d'Alexandre Dumas."
+            },
+            {
+                "id": 53,
+                "question": "Quel est le plus grand pays du Moyen-Orient ?",
+                "answers": [
+                    "Arabie Saoudite",
+                    "Iran",
+                    "Turquie",
+                    "Irak"
+                ],
+                "correctAnswer": 0,
+                "explanation": "L'Arabie Saoudite est le plus grand pays du Moyen-Orient."
+            },
+            {
+                "id": 54,
+                "question": "Quel est le plus grand lac d'Amérique du Sud ?",
+                "answers": [
+                    "Lac Titicaca",
+                    "Lac Maracaibo",
+                    "Lac Poopó",
+                    "Lac Buenos Aires"
+                ],
+                "correctAnswer": 1,
+                "explanation": "Le lac Maracaibo est le plus grand lac d'Amérique du Sud."
+            },
+            {
+                "id": 55,
+                "question": "Dans quel pays se trouve la ville de Séoul ?",
+                "answers": [
+                    "Chine",
+                    "Japon",
+                    "Corée du Sud",
+                    "Thaïlande"
+                ],
+                "correctAnswer": 2,
+                "explanation": "Séoul est la capitale de la Corée du Sud."
+            },
+            {
+                "id": 56,
+                "question": "Quel est le plus grand désert d'Australie ?",
+                "answers": [
+                    "Grand Désert de Sable",
+                    "Désert de Simpson",
+                    "Désert de Gibson",
+                    "Désert de Victoria"
+                ],
+                "correctAnswer": 0,
+                "explanation": "Le Grand Désert de Sable est le plus grand d'Australie."
+            },
+            {
+                "id": 57,
+                "question": "Qui a écrit 'Germinal' ?",
+                "answers": [
+                    "Émile Zola",
+                    "Gustave Flaubert",
+                    "Honoré de Balzac",
+                    "Alphonse Daudet"
+                ],
+                "correctAnswer": 0,
+                "explanation": "'Germinal' est un roman d'Émile Zola."
+            },
+            {
+                "id": 58,
+                "question": "Quel est le plus grand pays d'Amérique centrale ?",
+                "answers": [
+                    "Guatemala",
+                    "Honduras",
+                    "Nicaragua",
+                    "Panama"
+                ],
+                "correctAnswer": 2,
+                "explanation": "Le Nicaragua est le plus grand pays d'Amérique centrale."
+            },
+            {
+                "id": 59,
+                "question": "Quel est le plus grand lac d'Océanie ?",
+                "answers": [
+                    "Lac Eyre",
+                    "Lac Taupo",
+                    "Lac Murray",
+                    "Lac Victoria"
+                ],
+                "correctAnswer": 0,
+                "explanation": "Le lac Eyre est le plus grand lac d'Océanie."
+            },
+            {
+                "id": 60,
+                "question": "Dans quel pays se trouve la ville de Stockholm ?",
+                "answers": [
+                    "Norvège",
+                    "Suède",
+                    "Finlande",
+                    "Danemark"
+                ],
+                "correctAnswer": 1,
+                "explanation": "Stockholm est la capitale de la Suède."
+            },
+            {
+                "id": 61,
+                "question": "Quel est le plus grand fleuve d'Amérique du Nord ?",
+                "answers": [
+                    "Mississippi",
+                    "Saint-Laurent",
+                    "Missouri",
+                    "Colorado"
+                ],
+                "correctAnswer": 0,
+                "explanation": "Le Mississippi est le plus grand fleuve d'Amérique du Nord."
+            },
+            {
+                "id": 62,
+                "question": "Qui a écrit 'Le Rouge et le Noir' ?",
+                "answers": [
+                    "Stendhal",
+                    "Balzac",
+                    "Flaubert",
+                    "Zola"
+                ],
+                "correctAnswer": 0,
+                "explanation": "'Le Rouge et le Noir' est un roman de Stendhal."
+            },
+            {
+                "id": 63,
+                "question": "Quel est le plus grand pays d'Asie du Sud-Est ?",
+                "answers": [
+                    "Thaïlande",
+                    "Indonésie",
+                    "Malaisie",
+                    "Vietnam"
+                ],
+                "correctAnswer": 1,
+                "explanation": "L'Indonésie est le plus grand pays d'Asie du Sud-Est."
+            },
+            {
+                "id": 64,
+                "question": "Quel est le plus grand lac d'Australie ?",
+                "answers": [
+                    "Lac Eyre",
+                    "Lac Torrens",
+                    "Lac Gairdner",
+                    "Lac Frome"
+                ],
+                "correctAnswer": 0,
+                "explanation": "Le lac Eyre est le plus grand lac d'Australie."
+            },
+            {
+                "id": 65,
+                "question": "Dans quel pays se trouve la ville de Lisbonne ?",
+                "answers": [
+                    "Espagne",
+                    "Portugal",
+                    "Italie",
+                    "France"
+                ],
+                "correctAnswer": 1,
+                "explanation": "Lisbonne est la capitale du Portugal."
+            },
+            {
+                "id": 66,
+                "question": "Quel est le plus grand désert d'Amérique du Sud ?",
+                "answers": [
+                    "Atacama",
+                    "Patagonie",
+                    "Monte",
+                    "Sechura"
+                ],
+                "correctAnswer": 1,
+                "explanation": "La Patagonie est le plus grand désert d'Amérique du Sud."
+            },
+            {
+                "id": 67,
+                "question": "Qui a écrit 'Le Père Goriot' ?",
+                "answers": [
+                    "Honoré de Balzac",
+                    "Émile Zola",
+                    "Gustave Flaubert",
+                    "Alphonse Daudet"
+                ],
+                "correctAnswer": 0,
+                "explanation": "'Le Père Goriot' est un roman d'Honoré de Balzac."
+            },
+            {
+                "id": 68,
+                "question": "Quel est le plus grand pays d'Europe de l'Est ?",
+                "answers": [
+                    "Pologne",
+                    "Roumanie",
+                    "Ukraine",
+                    "Russie"
+                ],
+                "correctAnswer": 3,
+                "explanation": "La Russie est le plus grand pays d'Europe de l'Est."
+            },
+            {
+                "id": 69,
+                "question": "Quel est le plus grand lac d'Afrique de l'Est ?",
+                "answers": [
+                    "Lac Victoria",
+                    "Lac Tanganyika",
+                    "Lac Malawi",
+                    "Lac Turkana"
+                ],
+                "correctAnswer": 0,
+                "explanation": "Le lac Victoria est le plus grand lac d'Afrique de l'Est."
+            },
+            {
+                "id": 70,
+                "question": "Dans quel pays se trouve la ville de Bruxelles ?",
+                "answers": [
+                    "Pays-Bas",
+                    "Belgique",
+                    "France",
+                    "Allemagne"
+                ],
+                "correctAnswer": 1,
+                "explanation": "Bruxelles est la capitale de la Belgique."
+            },
+            {
+                "id": 71,
+                "question": "Quel est le plus grand fleuve d'Europe ?",
+                "answers": [
+                    "Danube",
+                    "Volga",
+                    "Rhin",
+                    "Elbe"
+                ],
+                "correctAnswer": 1,
+                "explanation": "La Volga est le plus grand fleuve d'Europe."
+            },
+            {
+                "id": 72,
+                "question": "Qui a écrit 'Madame Bovary' ?",
+                "answers": [
+                    "Gustave Flaubert",
+                    "Émile Zola",
+                    "Honoré de Balzac",
+                    "Stendhal"
+                ],
+                "correctAnswer": 0,
+                "explanation": "'Madame Bovary' est un roman de Gustave Flaubert."
+            },
+            {
+                "id": 73,
+                "question": "Quel est le plus grand pays d'Afrique de l'Ouest ?",
+                "answers": [
+                    "Mali",
+                    "Niger",
+                    "Nigéria",
+                    "Sénégal"
+                ],
+                "correctAnswer": 2,
+                "explanation": "Le Nigéria est le plus grand pays d'Afrique de l'Ouest."
+            },
+            {
+                "id": 74,
+                "question": "Quel est le plus grand lac d'Amérique centrale ?",
+                "answers": [
+                    "Lac Nicaragua",
+                    "Lac Atitlán",
+                    "Lac Izabal",
+                    "Lac Gatún"
+                ],
+                "correctAnswer": 0,
+                "explanation": "Le lac Nicaragua est le plus grand lac d'Amérique centrale."
+            },
+            {
+                "id": 75,
+                "question": "Dans quel pays se trouve la ville de Varsovie ?",
+                "answers": [
+                    "Pologne",
+                    "Hongrie",
+                    "Slovaquie",
+                    "Tchéquie"
+                ],
+                "correctAnswer": 0,
+                "explanation": "Varsovie est la capitale de la Pologne."
+            },
+            {
+                "id": 76,
+                "question": "Quel est le plus grand désert d'Amérique du Nord ?",
+                "answers": [
+                    "Sonora",
+                    "Mojave",
+                    "Grand Bassin",
+                    "Chihuahuan"
+                ],
+                "correctAnswer": 3,
+                "explanation": "Le désert de Chihuahuan est le plus grand d'Amérique du Nord."
+            },
+            {
+                "id": 77,
+                "question": "Qui a écrit 'Notre-Dame de Paris' ?",
+                "answers": [
+                    "Victor Hugo",
+                    "Alexandre Dumas",
+                    "Émile Zola",
+                    "Gustave Flaubert"
+                ],
+                "correctAnswer": 0,
+                "explanation": "'Notre-Dame de Paris' est un roman de Victor Hugo."
+            },
+            {
+                "id": 78,
+                "question": "Quel est le plus grand pays d'Afrique centrale ?",
+                "answers": [
+                    "Congo",
+                    "République Démocratique du Congo",
+                    "Gabon",
+                    "Cameroun"
+                ],
+                "correctAnswer": 1,
+                "explanation": "La RDC est le plus grand pays d'Afrique centrale."
+            },
+            {
+                "id": 79,
+                "question": "Quel est le plus grand lac d'Europe de l'Est ?",
+                "answers": [
+                    "Lac Baïkal",
+                    "Lac Ladoga",
+                    "Lac Onega",
+                    "Lac Peïpous"
+                ],
+                "correctAnswer": 1,
+                "explanation": "Le lac Ladoga est le plus grand lac d'Europe de l'Est."
+            },
+            {
+                "id": 80,
+                "question": "Dans quel pays se trouve la ville de Bucarest ?",
+                "answers": [
+                    "Bulgarie",
+                    "Roumanie",
+                    "Serbie",
+                    "Grèce"
+                ],
+                "correctAnswer": 1,
+                "explanation": "Bucarest est la capitale de la Roumanie."
+            },
+            {
+                "id": 81,
+                "question": "Quel est le plus grand fleuve d'Asie ?",
+                "answers": [
+                    "Yangtsé",
+                    "Mékong",
+                    "Gange",
+                    "Indus"
+                ],
+                "correctAnswer": 0,
+                "explanation": "Le Yangtsé est le plus grand fleuve d'Asie."
+            },
+            {
+                "id": 82,
+                "question": "Qui a écrit 'Le Tour du monde en 80 jours' ?",
+                "answers": [
+                    "Jules Verne",
+                    "Alexandre Dumas",
+                    "Victor Hugo",
+                    "Émile Zola"
+                ],
+                "correctAnswer": 0,
+                "explanation": "'Le Tour du monde en 80 jours' est un roman de Jules Verne."
+            },
+            {
+                "id": 83,
+                "question": "Quel est le plus grand pays d'Afrique australe ?",
+                "answers": [
+                    "Afrique du Sud",
+                    "Namibie",
+                    "Botswana",
+                    "Angola"
+                ],
+                "correctAnswer": 3,
+                "explanation": "L'Angola est le plus grand pays d'Afrique australe."
+            },
+            {
+                "id": 84,
+                "question": "Quel est le plus grand lac d'Afrique de l'Ouest ?",
+                "answers": [
+                    "Lac Volta",
+                    "Lac Tchad",
+                    "Lac Kainji",
+                    "Lac Nokoué"
+                ],
+                "correctAnswer": 0,
+                "explanation": "Le lac Volta est le plus grand lac d'Afrique de l'Ouest."
+            },
+            {
+                "id": 85,
+                "question": "Dans quel pays se trouve la ville de Copenhague ?",
+                "answers": [
+                    "Suède",
+                    "Norvège",
+                    "Danemark",
+                    "Finlande"
+                ],
+                "correctAnswer": 2,
+                "explanation": "Copenhague est la capitale du Danemark."
+            },
+            {
+                "id": 86,
+                "question": "Quel est le plus grand désert d'Europe ?",
+                "answers": [
+                    "Tabernas",
+                    "Oleshky Sands",
+                    "Błędów",
+                    "Accona"
+                ],
+                "correctAnswer": 1,
+                "explanation": "Oleshky Sands est le plus grand désert d'Europe (Ukraine)."
+            },
+            {
+                "id": 87,
+                "question": "Qui a écrit 'L'Étranger' ?",
+                "answers": [
+                    "Albert Camus",
+                    "Jean-Paul Sartre",
+                    "Simone de Beauvoir",
+                    "Boris Vian"
+                ],
+                "correctAnswer": 0,
+                "explanation": "'L'Étranger' est un roman d'Albert Camus."
+            },
+            {
+                "id": 88,
+                "question": "Quel est le plus grand pays d'Asie centrale ?",
+                "answers": [
+                    "Kazakhstan",
+                    "Ouzbékistan",
+                    "Turkménistan",
+                    "Kirghizistan"
+                ],
+                "correctAnswer": 0,
+                "explanation": "Le Kazakhstan est le plus grand pays d'Asie centrale."
+            },
+            {
+                "id": 89,
+                "question": "Quel est le plus grand lac d'Asie centrale ?",
+                "answers": [
+                    "Lac Balkhach",
+                    "Lac Issyk-Koul",
+                    "Lac Aral",
+                    "Lac Sarygamysh"
+                ],
+                "correctAnswer": 2,
+                "explanation": "Le lac Aral était le plus grand lac d'Asie centrale."
+            },
+            {
+                "id": 90,
+                "question": "Dans quel pays se trouve la ville de Dublin ?",
+                "answers": [
+                    "Royaume-Uni",
+                    "Irlande",
+                    "Écosse",
+                    "Pays de Galles"
+                ],
+                "correctAnswer": 1,
+                "explanation": "Dublin est la capitale de l'Irlande."
+            },
+            {
+                "id": 91,
+                "question": "Quel est le plus grand fleuve d'Océanie ?",
+                "answers": [
+                    "Murray",
+                    "Darling",
+                    "Sepik",
+                    "Fly"
+                ],
+                "correctAnswer": 0,
+                "explanation": "Le Murray est le plus grand fleuve d'Océanie."
+            },
+            {
+                "id": 92,
+                "question": "Qui a écrit 'Candide' ?",
+                "answers": [
+                    "Voltaire",
+                    "Rousseau",
+                    "Molière",
+                    "Diderot"
+                ],
+                "correctAnswer": 0,
+                "explanation": "'Candide' est un conte philosophique de Voltaire."
+            },
+            {
+                "id": 93,
+                "question": "Quel est le plus grand pays d'Amérique du Nord ?",
+                "answers": [
+                    "États-Unis",
+                    "Canada",
+                    "Mexique",
+                    "Groenland"
+                ],
+                "correctAnswer": 1,
+                "explanation": "Le Canada est le plus grand pays d'Amérique du Nord."
+            },
+            {
+                "id": 94,
+                "question": "Quel est le plus grand lac d'Amérique du Sud ?",
+                "answers": [
+                    "Lac Titicaca",
+                    "Lac Maracaibo",
+                    "Lac Poopó",
+                    "Lac Buenos Aires"
+                ],
+                "correctAnswer": 1,
+                "explanation": "Le lac Maracaibo est le plus grand lac d'Amérique du Sud."
+            },
+            {
+                "id": 95,
+                "question": "Dans quel pays se trouve la ville de Vienne ?",
+                "answers": [
+                    "Allemagne",
+                    "Autriche",
+                    "Suisse",
+                    "Hongrie"
+                ],
+                "correctAnswer": 1,
+                "explanation": "Vienne est la capitale de l'Autriche."
+            },
+            {
+                "id": 96,
+                "question": "Quel est le plus grand désert d'Afrique ?",
+                "answers": [
+                    "Sahara",
+                    "Kalahari",
+                    "Namib",
+                    "Danakil"
+                ],
+                "correctAnswer": 0,
+                "explanation": "Le Sahara est le plus grand désert d'Afrique."
+            },
+            {
+                "id": 97,
+                "question": "Qui a écrit 'Le Cid' ?",
+                "answers": [
+                    "Corneille",
+                    "Racine",
+                    "Molière",
+                    "Voltaire"
+                ],
+                "correctAnswer": 0,
+                "explanation": "'Le Cid' est une pièce de Pierre Corneille."
+            },
+            {
+                "id": 98,
+                "question": "Quel est le plus grand pays d'Amérique latine ?",
+                "answers": [
+                    "Argentine",
+                    "Brésil",
+                    "Mexique",
+                    "Colombie"
+                ],
+                "correctAnswer": 1,
+                "explanation": "Le Brésil est le plus grand pays d'Amérique latine."
+            },
+            {
+                "id": 99,
+                "question": "Quel est le plus grand lac d'Amérique du Nord ?",
+                "answers": [
+                    "Lac Supérieur",
+                    "Lac Michigan",
+                    "Lac Ontario",
+                    "Lac Huron"
+                ],
+                "correctAnswer": 0,
+                "explanation": "Le lac Supérieur est le plus grand lac d'Amérique du Nord."
+            },
+            {
+                "id": 100,
+                "question": "Dans quel pays se trouve la ville de Tokyo ?",
+                "answers": [
+                    "Chine",
+                    "Japon",
+                    "Corée du Sud",
+                    "Taïwan"
+                ],
+                "correctAnswer": 1,
+                "explanation": "Tokyo est la capitale du Japon."
+            }
+        ]
+    },
+    "photos": {
+        "challenges": [
+            {
+                "id": 1,
+                "image": "images/landmarks/eiffel.jpg",
+                "answer": "Tour Eiffel",
+                "hints": [
+                    "C'est un monument parisien",
+                    "Elle a été construite pour l'Exposition universelle",
+                    "Elle mesure 324 mètres de haut"
+                ]
+            },
+            {
+                "id": 2,
+                "image": "images/landmarks/monnalisa.jpg",
+                "answer": "La Joconde",
+                "hints": [
+                    "C'est un tableau célèbre",
+                    "Elle est exposée au Louvre",
+                    "Elle a un sourire énigmatique"
+                ]
+            }
+        ]
+    },
+    "truthDare": {
+        "truths": [
+            "Quelle est la chose la plus embarrassante qui vous soit arrivée ?",
+            "Quel est votre plus grand regret ?",
+            "Quelle est la plus grosse bêtise que vous ayez faite ?",
+            "Quel est votre plus grand secret ?"
+        ],
+        "dares": [
+            "Faites une imitation d'un animal pendant 30 secondes",
+            "Chantez une chanson à haute voix",
+            "Faites 10 pompes",
+            "Dansez pendant 1 minute sans musique"
+        ]
+    }
+} 
