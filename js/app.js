@@ -289,7 +289,20 @@ function displayQuestion(index) {
     const quitBtn = document.querySelector('.quit-btn');
     if (quitBtn) {
         quitBtn.onclick = () => {
-            showResults();
+            if (isHost) {
+                // L'hôte termine immédiatement la partie
+                sendEndGameToAll();
+            } else if (typeof peer !== 'undefined' && peer && peer.id && !isHost) {
+                if (window.hostConnection) {
+                    window.hostConnection.send({ type: 'playerQuit' });
+                } else if (typeof myPeerConnection !== 'undefined' && myPeerConnection) {
+                    myPeerConnection.send({ type: 'playerQuit' });
+                }
+                quitBtn.disabled = true;
+                quitBtn.textContent = 'En attente du classement...';
+            } else {
+                showResults();
+            }
         };
     }
 }
@@ -358,7 +371,6 @@ function handlePlayerData(playerId, data) {
         case 'join':
             players.set(playerId, { name: data.playerName, score: 0 });
             updatePlayersList();
-            // Informer TOUS les joueurs de l'état actuel du jeu
             connections.forEach(conn => {
                 conn.send({
                     type: 'gameState',
@@ -367,12 +379,15 @@ function handlePlayerData(playerId, data) {
             });
             break;
         case 'answer':
-            // Gérer la réponse du joueur
             if (data.isCorrect) {
                 if (players.has(playerId)) {
                     players.get(playerId).score = (players.get(playerId).score || 0) + 1;
                 }
             }
+            break;
+        case 'playerQuit':
+            // Un joueur a quitté : on termine la partie pour tout le monde
+            sendEndGameToAll();
             break;
     }
 }
@@ -880,6 +895,9 @@ function handleHostData(data) {
         case 'endGame':
             // Afficher l'écran de fin de partie avec le classement
             showMultiplayerResults(data.classement);
+            break;
+        case 'playerQuit':
+            // Optionnel : tu peux gérer ici la suppression du joueur de la partie si tu veux
             break;
     }
 }
