@@ -408,15 +408,17 @@ button:hover, .count-btn:hover, .menu-btn:hover, .mode-btn:hover, .game-mode-btn
     padding: 1rem 0.5rem;
     font-size: 1.15rem;
     font-weight: 700;
-    width: 95%;
+    width: 100%;
     max-width: 420px;
+    min-width: 180px;
     box-shadow: 0 2px 16px rgba(0,0,0,0.10);
     transition: all 0.2s;
     text-align: center;
     outline: none;
-    margin-left: 0;
-    margin-right: 0;
+    margin-left: auto;
+    margin-right: auto;
     letter-spacing: 0.01em;
+    display: block;
 }
 
 .answer-btn:nth-child(even) {
@@ -1532,8 +1534,6 @@ body.accueil .mode-selection {
     padding: 1rem 0.5rem !important;
     font-size: 1.15rem !important;
     font-weight: 700 !important;
-    width: 95% !important;
-    max-width: 420px !important;
     box-shadow: 0 2px 16px rgba(0,0,0,0.10) !important;
     transition: all 0.2s !important;
     text-align: center !important;
@@ -1590,7 +1590,7 @@ body.accueil .mode-selection {
 }
 
 /* SUPPRESSION DES REGLES CONFLICTUELLES POUR LE QUIZ PHOTO SUR MOBILE */
-.photo-question-block, .photo-question-block .answers, .photo-question-block .answer-btn {
+/* .photo-question-block, .photo-question-block .answers, .photo-question-block .answer-btn {
   align-items: unset !important;
   max-width: unset !important;
   width: unset !important;
@@ -1598,41 +1598,29 @@ body.accueil .mode-selection {
   padding-right: unset !important;
   margin-left: unset !important;
   margin-right: unset !important;
-}
+} */
 
 /* CORRECTION FINALE : UN SEUL BLOC QUI FORCE LE STYLE MOBILE */
 @media (max-width: 600px) {
   .photo-question-block {
-    align-items: stretch !important;
-    width: 100% !important;
-    max-width: 100% !important;
+    max-width: 100vw !important;
+    width: 100vw !important;
+    box-sizing: border-box !important;
     padding-left: 0 !important;
     padding-right: 0 !important;
   }
   .photo-question-block .answers {
-    align-items: stretch !important;
     width: 100% !important;
     max-width: 100% !important;
+    align-items: stretch !important;
     padding: 0 !important;
-    display: flex !important;
-    flex-direction: column !important;
-    gap: 1.2rem !important;
+    margin: 0 !important;
   }
   .photo-question-block .answer-btn {
     width: 100% !important;
     max-width: 100% !important;
-    margin-left: 0 !important;
-    margin-right: 0 !important;
-    border-radius: 18px !important;
-    font-size: 1.15rem !important;
-    padding: 1rem 0.5rem !important;
-    font-weight: 700 !important;
-    background: linear-gradient(90deg, var(--primary-color) 0%, var(--secondary-color) 100%) !important;
-    color: #fff !important;
-    box-shadow: 0 2px 16px rgba(0,0,0,0.10) !important;
-    text-align: center !important;
-    display: block !important;
-    letter-spacing: 0.01em !important;
+    min-width: 0 !important;
+    margin: 0 !important;
   }
 }
 

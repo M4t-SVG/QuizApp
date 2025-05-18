@@ -193,7 +193,8 @@ async function startQuizWithCount(questionCount, gameMode) {
             `;
             displayQuestion(index);
         }
-
+        // Exposer la fonction pour l'utiliser dans showPassPhoneScreen
+        window.renderQuizQuestionScreen = renderQuizQuestionScreen;
         // Initialisation
         renderQuizQuestionScreen(currentQuestionIndex);
     } catch (error) {
@@ -286,8 +287,20 @@ function handleAnswer(event) {
     }
     flashEffect(selectedIndex === question.correctAnswer);
     if (timerInterval) clearInterval(timerInterval);
-    const nextBtn = document.querySelector('.next-btn');
-    if (nextBtn) nextBtn.style.display = 'block';
+    
+    // Si on est en mode "pass", afficher directement l'écran de passage du téléphone
+    if (quizGameMode === 'pass') {
+        if (currentQuestionIndex < questions.length - 1) {
+            currentQuestionIndex++;
+            showPassPhoneScreen(currentQuestionIndex, questions.length, () => displayQuestion(currentQuestionIndex));
+        } else {
+            showResults();
+        }
+    } else {
+        // En mode normal, afficher le bouton suivant
+        const nextBtn = document.querySelector('.next-btn');
+        if (nextBtn) nextBtn.style.display = 'block';
+    }
 }
 
 function showCorrectAnswer() {
@@ -339,17 +352,31 @@ function showResults() {
 
 function showPassPhoneScreen(currentQuestionIndex, totalQuestions, onContinue) {
     const gameArea = document.querySelector('.game-area');
-    const currentNum = currentQuestionIndex + 1;
+    // Forcer le style sur gameArea pour éviter les bandes
+    gameArea.style.width = '100vw';
+    gameArea.style.height = '100vh';
+    gameArea.style.padding = '0';
+    gameArea.style.margin = '0';
+    gameArea.style.background = 'linear-gradient(135deg, #2193b0 0%, #6dd5ed 100%)';
     gameArea.innerHTML = `
-        <div class="pass-phone-screen fade-in">
-            <div class="big-question-label fade-in-delay0">Question ${currentNum} / ${totalQuestions}</div>
-            <span class="phone-emoji bounce-in">📱</span>
-            <h2 class="pass-title fade-in-delay1">Passe le téléphone au joueur suivant !</h2>
-            <button class="next-btn fade-in-delay2">Continuer</button>
+        <div class="pass-phone-screen fade-in" style="width:100vw; height:100vh; min-height:100vh; margin:0; padding:0; display:flex; flex-direction:column; justify-content:center; align-items:center; color:#fff;">
+            <div class="big-question-label fade-in-delay0" style="font-size: 1.3rem; font-weight: 700; margin-bottom: 1.2rem; color: #fff; letter-spacing: 0.01em;">Question ${currentQuestionIndex + 1} / ${totalQuestions}</div>
+            <span class="phone-emoji bounce-in" style="font-size: 3.5rem; margin-bottom: 1.2rem;">📱</span>
+            <h2 class="pass-title fade-in-delay1" style="font-size: 2rem; font-weight: 800; margin-bottom: 2.2rem; color: #fff; text-align: center;">Passe le téléphone au joueur suivant !</h2>
+            <button class="next-btn fade-in-delay2" style="background: linear-gradient(90deg, var(--primary-color) 0%, var(--secondary-color) 100%); color: #fff; border: none; border-radius: 18px; padding: 1rem 2.5rem; font-size: 1.25rem; font-weight: 700; box-shadow: 0 2px 16px rgba(0,0,0,0.10); cursor: pointer;">Continuer</button>
         </div>
     `;
     document.querySelector('.next-btn').addEventListener('click', () => {
-        if (typeof onContinue === 'function') onContinue();
+        setTimeout(() => {
+            if (typeof onContinue === 'function') {
+                // Utiliser la fonction globale pour afficher la question suivante
+                if (window.renderQuizQuestionScreen) {
+                    window.renderQuizQuestionScreen(currentQuestionIndex);
+                } else {
+                    onContinue();
+                }
+            }
+        }, 10);
     });
 }
 
@@ -741,9 +768,20 @@ function startTimer(duration, displayElement, onComplete) {
                 timerLoopStarted = false;
             }
             if (onComplete) onComplete();
-            // Afficher le bouton suivant quand le timer arrive à 0
-            const nextBtn = document.querySelector('.next-btn');
-            if (nextBtn) nextBtn.style.display = 'block';
+            
+            // Si on est en mode "pass", afficher directement l'écran de passage du téléphone
+            if (quizGameMode === 'pass' && !isAnswerSelected) {
+                if (currentQuestionIndex < questions.length - 1) {
+                    currentQuestionIndex++;
+                    showPassPhoneScreen(currentQuestionIndex, questions.length, () => displayQuestion(currentQuestionIndex));
+                } else {
+                    showResults();
+                }
+            } else {
+                // En mode normal, afficher le bouton suivant
+                const nextBtn = document.querySelector('.next-btn');
+                if (nextBtn) nextBtn.style.display = 'block';
+            }
         }
     }, 1000);
     return countdown;
