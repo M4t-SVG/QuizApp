@@ -43,6 +43,21 @@ let isAnswerSelected = false;
 let questions = [];
 let quizGameMode = '';
 
+// Timer générique pour les questions
+function startTimer(duration, display, onEnd) {
+    let timer = duration;
+    display.textContent = timer;
+    const interval = setInterval(() => {
+        timer--;
+        display.textContent = timer;
+        if (timer <= 0) {
+            clearInterval(interval);
+            if (typeof onEnd === 'function') onEnd();
+        }
+    }, 1000);
+    return interval;
+}
+
 // Fonction pour démarrer un jeu
 function startGame(mode) {
     console.log('Démarrage du jeu en mode:', mode);
@@ -159,6 +174,11 @@ function showQuestionCountSelection(gameMode) {
     addQuitButtonClickSound();
 }
 
+// Fonction utilitaire pour le son du bouton quitter (évite l'erreur JS)
+function addQuitButtonClickSound() {
+    // À compléter si besoin
+}
+
 async function startQuizWithCount(questionCount, gameMode) {
     try {
         const response = await fetch('data/questions.json');
@@ -216,24 +236,22 @@ function displayQuestion(index) {
     const question = questions[index];
     document.querySelector('.question-bubble .question').textContent = question.question;
     document.getElementById('current-question').textContent = (index + 1);
+    
     const answersContainer = document.querySelector('.answers');
-    answersContainer.innerHTML = question.answers.map((answer, i) => `
-        <button class="answer-btn" data-index="${i}" type="button" tabindex="-1">${answer}</button>
+    const correctAnswer = question.answers[question.correctAnswer];
+    const shuffledAnswers = [...question.answers];
+    shuffleArray(shuffledAnswers);
+    const newCorrectIndex = shuffledAnswers.indexOf(correctAnswer);
+    answersContainer.innerHTML = shuffledAnswers.map((answer, i) => `
+        <button class="answer-btn" data-index="${i}" data-correct="${i === newCorrectIndex}" type="button">${answer}</button>
     `).join('');
-    setTimeout(() => {
-        document.querySelectorAll('.answer-btn').forEach(btn => btn.blur());
-    }, 30);
+    
     document.querySelectorAll('.answer-btn').forEach(btn => {
         btn.addEventListener('click', handleAnswer, { once: true });
     });
-    setTimeout(() => {
-        document.querySelectorAll('.answer-btn').forEach(btn => btn.blur());
-    }, 200);
+    
     if (timerInterval) {
         clearInterval(timerInterval);
-        const overlay = getFlashOverlay();
-        overlay.classList.remove('flash-warning');
-        window.soundManager.stopTimerLoop();
     }
     const timeDisplay = document.getElementById('time');
     timeDisplay.textContent = gameModes.quiz.timePerQuestion;
@@ -242,92 +260,70 @@ function displayQuestion(index) {
             showCorrectAnswer();
         }
     });
-    // Bouton suivante
+
+    // Ajout des listeners pour les boutons à chaque affichage de question
     const nextBtn = document.querySelector('.next-btn');
     if (nextBtn) {
         nextBtn.onclick = () => {
             if (currentQuestionIndex < questions.length - 1) {
                 currentQuestionIndex++;
-                if (quizGameMode === 'pass') {
-                    showPassPhoneScreen(currentQuestionIndex, questions.length, () => displayQuestion(currentQuestionIndex));
-                } else {
-                    displayQuestion(currentQuestionIndex);
-                }
+                displayQuestion(currentQuestionIndex);
             } else {
                 showResults();
             }
         };
     }
-    // Bouton quitter
     const quitBtn = document.querySelector('.quit-btn');
     if (quitBtn) {
-        quitBtn.onclick = showResults;
+        quitBtn.onclick = () => {
+            returnToMainMenu();
+        };
     }
 }
 
 function handleAnswer(event) {
     if (isAnswerSelected) return;
     isAnswerSelected = true;
+
     const selectedIndex = parseInt(event.target.dataset.index);
-    const question = questions[currentQuestionIndex];
-    document.querySelectorAll('.answer-btn').forEach((btn, i) => {
+    const isCorrect = event.target.dataset.correct === 'true';
+
+    document.querySelectorAll('.answer-btn').forEach(btn => {
         btn.disabled = true;
-        if (i === question.correctAnswer) {
+        if (btn.dataset.correct === 'true') {
             btn.classList.add('correct');
-        }
-        if (i === selectedIndex && i !== question.correctAnswer) {
+        } else if (parseInt(btn.dataset.index) === selectedIndex) {
             btn.classList.add('wrong');
         }
     });
-    if (selectedIndex === question.correctAnswer) {
+
+    if (isCorrect) {
         score++;
         window.soundManager.playCorrect();
     } else {
         window.soundManager.playWrong();
     }
-    flashEffect(selectedIndex === question.correctAnswer);
+
+    flashEffect(isCorrect);
     if (timerInterval) clearInterval(timerInterval);
-    
-    // Si on est en mode "pass", afficher la correction 5 secondes puis passer à l'écran de passage
-    if (quizGameMode === 'pass') {
-        setTimeout(() => {
-            if (currentQuestionIndex < questions.length - 1) {
-                currentQuestionIndex++;
-                showPassPhoneScreen(currentQuestionIndex, questions.length, () => window.renderQuizQuestionScreen(currentQuestionIndex));
-            } else {
-                showResults();
-            }
-        }, 5000);
-    } else {
-        // En mode normal, afficher le bouton suivant
-        const nextBtn = document.querySelector('.next-btn');
-        if (nextBtn) nextBtn.style.display = 'block';
-    }
+    const nextBtn = document.querySelector('.next-btn');
+    if (nextBtn) nextBtn.style.display = 'block';
 }
 
 function showCorrectAnswer() {
     if (isAnswerSelected) return;
     isAnswerSelected = true;
-    const question = questions[currentQuestionIndex];
-    document.querySelectorAll('.answer-btn').forEach((btn, i) => {
+
+    document.querySelectorAll('.answer-btn').forEach(btn => {
         btn.disabled = true;
-        if (i === question.correctAnswer) {
+        if (btn.dataset.correct === 'true') {
             btn.classList.add('correct');
         }
     });
-    if (quizGameMode === 'pass') {
-        setTimeout(() => {
-            if (currentQuestionIndex < questions.length - 1) {
-                currentQuestionIndex++;
-                showPassPhoneScreen(currentQuestionIndex, questions.length, () => window.renderQuizQuestionScreen(currentQuestionIndex));
-            } else {
-                showResults();
-            }
-        }, 5000);
-    } else {
-        const nextBtn = document.querySelector('.next-btn');
-        if (nextBtn) nextBtn.style.display = 'block';
-    }
+
+    if (timerInterval) clearInterval(timerInterval);
+    const nextBtn = document.querySelector('.next-btn');
+    if (nextBtn) nextBtn.style.display = 'block';
 }
 
 function showResults() {
@@ -487,336 +483,44 @@ async function startPhotoGameWithCount(questionCount) {
                     </div>
                 </div>
             `;
-            window.soundManager.setupMenuButtonSounds();
-
-            // Ajouter les event listeners
-            document.querySelectorAll('.answer-btn').forEach(btn => {
-                btn.disabled = false;
-                btn.addEventListener('click', handleAnswer, { once: true });
-            });
-
-            // Mettre à jour le compteur
-            document.getElementById('current-question').textContent = (index + 1);
-
-            // Réinitialiser le timer
-            const timeDisplay = document.getElementById('time');
-            timeDisplay.textContent = gameModes.photos.timePerQuestion;
-            if (timerInterval) clearInterval(timerInterval);
-            timerInterval = startTimer(gameModes.photos.timePerQuestion, timeDisplay, () => {
-                if (!isAnswerSelected) {
-                    showCorrectAnswer();
-                }
-            });
-
-            // Réattacher les boutons suivant/quitter
-            const nextBtn = document.querySelector('.next-btn');
-            const quitBtn = document.querySelector('.quit-btn');
-            nextBtn.addEventListener('click', () => {
-                if (currentQuestionIndex < challenges.length - 1) {
-                    currentQuestionIndex++;
-                    displayQuestion(currentQuestionIndex);
-                    nextBtn.style.display = 'none';
-                } else {
-                    showResults();
-                }
-            });
-            quitBtn.addEventListener('click', showResults);
         }
-
-        function handleAnswer(event) {
-            if (isAnswerSelected) return;
-            isAnswerSelected = true;
-
-            const selectedIndex = parseInt(event.target.dataset.index);
-            const isCorrect = event.target.dataset.correct === 'true';
-
-            // Désactiver tous les boutons
-            document.querySelectorAll('.answer-btn').forEach(btn => {
-                btn.disabled = true;
-                if (btn.dataset.correct === 'true') {
-                    btn.classList.add('correct');
-                } else if (parseInt(btn.dataset.index) === selectedIndex) {
-                    btn.classList.add('wrong');
-                }
-            });
-
-            // Mettre à jour le score
-            if (isCorrect) {
-                score++;
-                window.soundManager.playCorrect();
-            } else {
-                window.soundManager.playWrong();
-            }
-
-            // Effet visuel
-            flashEffect(isCorrect);
-
-            // Arrêter le timer
-            if (timerInterval) clearInterval(timerInterval);
-
-            // Afficher le bouton suivant (corrigé)
-            const nextBtn = document.querySelector('.next-btn');
-            if (nextBtn) nextBtn.style.display = 'block';
-        }
-
-        function showCorrectAnswer() {
-            if (isAnswerSelected) return;
-            isAnswerSelected = true;
-
-            document.querySelectorAll('.answer-btn').forEach(btn => {
-                btn.disabled = true;
-                if (btn.dataset.correct === 'true') {
-                    btn.classList.add('correct');
-                }
-            });
-
-            if (timerInterval) clearInterval(timerInterval);
-            nextBtn.style.display = 'block';
-        }
-
-        function showResults() {
-            const totalQuestions = challenges.length;
-            const questionsAnswered = Math.min(currentQuestionIndex + 1, totalQuestions);
-            const percentage = Math.round((score / questionsAnswered) * 100);
-
-            // Jouer le son de résultats
-            window.soundManager.playResults();
-
-            gameArea.innerHTML = `
-                <div class="results-container">
-                    <div class="results-header">
-                        <span class="results-icon">🎉</span>
-                        <h2 class="results-title">Quiz photo terminé !</h2>
-                    </div>
-                    <div class="results-summary">
-                        <div class="results-row">
-                            <span class="results-label">Photos devinées</span>
-                            <span class="results-value">${questionsAnswered} / ${totalQuestions}</span>
-                        </div>
-                        <div class="results-row">
-                            <span class="results-label">Score</span>
-                            <span class="results-value">${score} / ${questionsAnswered}</span>
-                        </div>
-                        <div class="results-row highlight">
-                            <span class="results-label">Pourcentage de réussite</span>
-                            <span class="results-value">${percentage}%</span>
-                        </div>
-                    </div>
-                    <button class="menu-btn" onclick="returnToMainMenu()">Retour au menu</button>
-                </div>
-            `;
-            window.soundManager.setupMenuButtonSounds();
-            addQuitButtonClickSound();
-        }
-
-        // Démarrer avec la première question
-        displayQuestion(currentQuestionIndex);
-
     } catch (error) {
-        console.error('Erreur:', error);
+        console.error('Erreur lors du chargement des questions:', error);
+        const gameArea = document.querySelector('.game-area');
         gameArea.innerHTML = `
             <div class="error-container">
                 <h2>Erreur</h2>
-                <p>Impossible de charger les photos. Veuillez réessayer.</p>
+                <p>Impossible de charger les questions. Veuillez réessayer.</p>
                 <button onclick="returnToMainMenu()">Retour au menu</button>
             </div>
         `;
     }
 }
 
-// Fonction pour initialiser le jeu Action/Vérité
-async function initTruthDareGame() {
-    const data = await loadJsonData('data/questions.json');
-    if (!data) return;
-    
-    const gameArea = document.querySelector('.game-area');
-    gameArea.innerHTML = `
-        <div class="truth-dare-container fade-in">
-            <h2 class="quiz-title">Action / Vérité</h2>
-            <div class="game-modes-cards">
-                <button class="game-mode-card" data-mode="normal">
-                    <span class="icon">🎲</span>
-                    <span class="title">Normal</span>
-                    <span class="desc">Défis classiques pour tous</span>
-                </button>
-                <button class="game-mode-card" data-mode="alcool">
-                    <span class="icon">🍻</span>
-                    <span class="title">Alcool</span>
-                    <span class="desc">Défis à boire, à consommer avec modération</span>
-                </button>
-                <button class="game-mode-card" data-mode="adulte">
-                    <span class="icon">🔞</span>
-                    <span class="title">+18</span>
-                    <span class="desc">Défis réservés aux adultes</span>
-                </button>
-            </div>
-            <button class="menu-btn" onclick="returnToMainMenu()">Retour au menu</button>
-        </div>
-    `;
-    window.soundManager.setupMenuButtonSounds();
-    document.querySelectorAll('.game-mode-card').forEach(btn => {
-        btn.addEventListener('click', () => {
-            const selectedMode = btn.dataset.mode;
-            showTruthDareCountSelection(selectedMode);
-        });
-    });
-
-    addQuitButtonClickSound();
-}
-
-function showTruthDareCountSelection(selectedMode) {
-    const gameArea = document.querySelector('.game-area');
-    let modeLabel = 'Normal';
-    if (selectedMode === 'alcool') modeLabel = 'Alcool';
-    if (selectedMode === 'adulte') modeLabel = '+18';
-    gameArea.innerHTML = `
-        <div class="truth-dare-container fade-in">
-            <h2 class="quiz-title">Action / Vérité - ${modeLabel}</h2>
-            <div class="game-modes-cards">
-                <button class="game-mode-card count-btn" data-count="10">10 défis</button>
-                <button class="game-mode-card count-btn" data-count="25">25 défis</button>
-                <button class="game-mode-card count-btn" data-count="50">50 défis</button>
-                <button class="game-mode-card count-btn" data-count="100">100 défis</button>
-            </div>
-            <button class="menu-btn" onclick="returnToMainMenu()">Retour au menu</button>
-        </div>
-    `;
-    window.soundManager.setupMenuButtonSounds();
-    document.querySelectorAll('.count-btn').forEach(btn => {
-        btn.addEventListener('click', async () => {
-            const questionCount = parseInt(btn.dataset.count);
-            await startTruthDareWithCount(questionCount, selectedMode);
-        });
-    });
-
-    addQuitButtonClickSound();
-}
-
-async function startTruthDareWithCount(questionCount, selectedMode) {
-    const gameArea = document.querySelector('.game-area');
-    let modeLabel = 'Normal';
-    if (selectedMode === 'alcool') modeLabel = 'Alcool';
-    if (selectedMode === 'adulte') modeLabel = '+18';
-    gameArea.innerHTML = `
-        <div class="truth-dare-container">
-            <h2 class="quiz-title">Action / Vérité - ${modeLabel}</h2>
-            <div class="quiz-status-bar">
-                ⏱️ <span id="time">--</span> s
-                <span class="progress-bar-inline">Défi <span id="current-challenge">1</span>/${questionCount}</span>
-            </div>
-            <div class="truth-dare-block">
-                <p class="challenge-text">Chargement du défi...</p>
-                <div class="action-buttons">
-                    <button class="truth-btn">Vérité</button>
-                    <button class="dare-btn">Action</button>
-                    <button class="skip-btn">Passer</button>
-                </div>
-            </div>
-            <button class="quit-btn">Terminer le jeu</button>
-        </div>
-    `;
-    // TODO: Logique du jeu action/vérité à compléter
-}
-
-// Fonction utilitaire pour obtenir ou créer l'overlay de flash global
-function getFlashOverlay() {
-    let overlay = document.querySelector('.flash-overlay');
-    if (!overlay) {
-        overlay = document.createElement('div');
-        overlay.className = 'flash-overlay';
-        document.body.appendChild(overlay);
-    }
-    return overlay;
-}
-
-// Fonction utilitaire pour effet visuel de clignotement
-function flashEffect(isCorrect) {
-    const overlay = getFlashOverlay();
-    // Supprimer toutes les classes d'animation existantes
-    overlay.classList.remove('flash-correct', 'flash-wrong', 'flash-warning');
-    // Forcer un reflow pour réinitialiser l'animation
-    void overlay.offsetWidth;
-    // Ajouter la nouvelle classe d'animation
-    overlay.classList.add(isCorrect ? 'flash-correct' : 'flash-wrong');
-    // Supprimer la classe après l'animation
-    setTimeout(() => {
-        overlay.classList.remove('flash-correct', 'flash-wrong');
-    }, 500);
-}
-
-// Fonction utilitaire pour gérer le timer avec effet warning global
-function startTimer(duration, displayElement, onComplete) {
-    let timer = duration;
-    const overlay = getFlashOverlay();
-    let timerLoopStarted = false;
-    
-    // Nettoyer l'ancien timer et son effet
-    if (timerInterval) {
-        clearInterval(timerInterval);
-        overlay.classList.remove('flash-warning');
-        window.soundManager.stopTimerLoop();
-    }
-
-    const countdown = setInterval(() => {
-        displayElement.textContent = timer;
-        // Effet warning global
-        if (timer <= 10 && timer > 0) {
-            overlay.classList.add('flash-warning');
-            if (!timerLoopStarted) {
-                window.soundManager.playTimerLoop();
-                timerLoopStarted = true;
-            }
-        } else {
-            overlay.classList.remove('flash-warning');
-            if (timerLoopStarted) {
-                window.soundManager.stopTimerLoop();
-                timerLoopStarted = false;
-            }
-        }
-        if (--timer < 0) {
-            clearInterval(countdown);
-            overlay.classList.remove('flash-warning');
-            if (timerLoopStarted) {
-                window.soundManager.stopTimerLoop();
-                timerLoopStarted = false;
-            }
-            if (onComplete) onComplete();
-            
-            // Si on est en mode "pass", afficher directement l'écran de passage du téléphone
-            if (quizGameMode === 'pass' && !isAnswerSelected) {
-                if (currentQuestionIndex < questions.length - 1) {
-                    currentQuestionIndex++;
-                    showPassPhoneScreen(currentQuestionIndex, questions.length, () => displayQuestion(currentQuestionIndex));
-                } else {
-                    showResults();
-                }
-            } else {
-                // En mode normal, afficher le bouton suivant
-                const nextBtn = document.querySelector('.next-btn');
-                if (nextBtn) nextBtn.style.display = 'block';
-            }
-        }
-    }, 1000);
-    return countdown;
-}
-
-// Fonction pour revenir au menu principal
+// Fonction pour retourner au menu principal
 function returnToMainMenu() {
     const gameArea = document.querySelector('.game-area');
     const modeSelection = document.querySelector('.home-hero');
     
-    // Démarrer la musique de fond (si elle n'est pas déjà en cours)
-    window.soundManager.playBackground();
+    // Réinitialiser les variables globales
+    currentQuestionIndex = 0;
+    score = 0;
+    if (timerInterval) {
+        clearInterval(timerInterval);
+    }
+    isAnswerSelected = false;
+    questions = [];
+    quizGameMode = '';
     
+    // Afficher le menu principal et cacher la zone de jeu
+    modeSelection.style.display = 'flex';
     gameArea.style.display = 'none';
-    modeSelection.style.display = 'block';
+    
+    // Relancer la musique de fond
+    window.soundManager.playBackground();
 }
 
-// Ajout du son de clic sur tous les boutons 'Quitter le quiz' après chaque rendu dynamique
-function addQuitButtonClickSound() {
-    document.querySelectorAll('.quit-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-            window.soundManager.playClick();
-        });
-    });
-} 
+// Effet visuel lors de la réponse (placeholder)
+function flashEffect(isCorrect) {
+    // Tu peux ajouter un effet visuel ici si tu veux
+}
