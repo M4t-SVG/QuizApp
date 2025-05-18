@@ -34,13 +34,17 @@ window.joinMultiplayerGame = joinMultiplayerGame;
 // Gestionnaire d'événements pour les boutons de mode de jeu
 document.addEventListener('DOMContentLoaded', function() {
     console.log('DOM chargé, initialisation des boutons...');
-    document.querySelectorAll('.game-mode-btn').forEach(button => {
-        button.addEventListener('click', () => {
-            const mode = button.dataset.mode;
-            console.log('Mode sélectionné:', mode);
-            startGame(mode);
-        });
-    });
+    
+    // Initialiser le carrousel
+    initCarousel();
+    // Retirer le focus de toute carte après initialisation
+    setTimeout(() => {
+        document.querySelectorAll('.game-mode-card').forEach(card => card.blur && card.blur());
+        if(document.activeElement && document.activeElement.classList.contains('game-mode-card')) {
+            document.activeElement.blur();
+        }
+    }, 50);
+    
     // Lancer la musique de fond dès l'arrivée sur la page principale
     window.soundManager.playBackground();
 });
@@ -223,10 +227,9 @@ async function startQuizWithCount(questionCount, gameMode) {
             `;
             displayQuestion(index);
         }
-        // Exposer la fonction pour l'utiliser dans showPassPhoneScreen
         window.renderQuizQuestionScreen = renderQuizQuestionScreen;
         // Initialisation
-        renderQuizQuestionScreen(currentQuestionIndex);
+        renderQuizQuestionScreen(0);
     } catch (error) {
         console.error('Erreur lors du chargement des questions:', error);
         const gameArea = document.querySelector('.game-area');
@@ -286,7 +289,7 @@ function displayQuestion(index) {
     const quitBtn = document.querySelector('.quit-btn');
     if (quitBtn) {
         quitBtn.onclick = () => {
-            returnToMainMenu();
+            showResults();
         };
     }
 }
@@ -606,7 +609,7 @@ async function startPhotoGameWithCount(questionCount) {
 
             // Ajouter l'écouteur pour le bouton quitter
             document.querySelector('.quit-btn').onclick = () => {
-                returnToMainMenu();
+                showResults();
             };
 
             // Démarrer le timer
@@ -1089,3 +1092,67 @@ window.addEventListener('beforeunload', function(e) {
         sendEndGameToAll();
     }
 });
+
+// Fonction pour initialiser le carrousel
+function initCarousel() {
+    const carousels = document.querySelectorAll('.game-modes-cards');
+    const isMobile = window.matchMedia('(max-width: 768px)').matches;
+
+    carousels.forEach(carousel => {
+        const cards = carousel.querySelectorAll('.game-mode-card');
+        if (cards.length === 0) return;
+
+        let currentIndex = 0;
+
+        function updateClasses() {
+            cards.forEach((card, i) => {
+                card.classList.remove('active', 'prev', 'next');
+                if (i === currentIndex) {
+                    card.classList.add('active');
+                } else if (i === (currentIndex - 1 + cards.length) % cards.length) {
+                    card.classList.add('prev');
+                } else if (i === (currentIndex + 1) % cards.length) {
+                    card.classList.add('next');
+                }
+            });
+        }
+
+        function scrollToActive() {
+            const activeCard = cards[currentIndex];
+            if (activeCard && typeof activeCard.scrollIntoView === 'function') {
+                if (isMobile) {
+                    activeCard.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'center',
+                        inline: 'nearest'
+                    });
+                } else {
+                    activeCard.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'nearest',
+                        inline: 'center'
+                    });
+                }
+            }
+        }
+
+        function updateCarousel(newIndex) {
+            currentIndex = newIndex;
+            updateClasses();
+            scrollToActive();
+            window.soundManager.playClick();
+        }
+
+        // Initialisation
+        updateClasses();
+
+        // Clic sur une carte
+        cards.forEach((card, index) => {
+            card.addEventListener('click', () => {
+                if (index !== currentIndex) {
+                    updateCarousel(index);
+                }
+            });
+        });
+    });
+}
