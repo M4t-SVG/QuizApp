@@ -257,7 +257,7 @@ function displayQuestion(index) {
     `).join('');
     
     document.querySelectorAll('.answer-btn').forEach(btn => {
-        btn.addEventListener('click', handleAnswer, { once: true });
+        btn.addEventListener('click', window.handleAnswer, { once: true });
     });
     
     if (timerInterval) {
@@ -288,6 +288,89 @@ function displayQuestion(index) {
         quitBtn.onclick = () => {
             returnToMainMenu();
         };
+    }
+}
+
+// --- ENVOI DE LA RÉPONSE AU HOST PAR LE CLIENT ---
+let myPeerConnection = null; // Pour garder la connexion côté client
+
+// Modif dans connectToHost pour garder la connexion
+function connectToHost(playerName, hostCode) {
+    // Nettoyer le code entré (majuscules, sans espaces)
+    const cleanCode = hostCode.trim().toUpperCase();
+    peer = new Peer();
+    
+    peer.on('open', (id) => {
+        console.log('[CLIENT] PeerJS ouvert avec ID :', id);
+        const conn = peer.connect(cleanCode);
+        myPeerConnection = conn; // On garde la connexion pour l'envoi des réponses
+        conn.on('open', () => {
+            console.log('[CLIENT] Connecté à l\'hôte', cleanCode);
+            conn.send({
+                type: 'join',
+                playerName: playerName,
+                playerId: id
+            });
+        });
+
+        conn.on('data', (data) => {
+            handleHostData(data);
+        });
+
+        conn.on('error', (err) => {
+            console.error('[CLIENT] Connexion PeerJS error:', err);
+            showJoinError('Impossible de se connecter à la partie. Vérifie le code ou réessaie.');
+        });
+    });
+    peer.on('error', (err) => {
+        console.error('[CLIENT] PeerJS error:', err);
+        showJoinError('Erreur réseau PeerJS. Réessaie ou change de code.');
+    });
+}
+
+// --- ENVOI DE LA RÉPONSE AU HOST PAR LE CLIENT ---
+function sendAnswerToHost(isCorrect) {
+    if (myPeerConnection && myPeerConnection.open) {
+        myPeerConnection.send({
+            type: 'answer',
+            isCorrect: isCorrect,
+            playerId: peer.id
+        });
+    }
+}
+
+// --- MODIFIE handleAnswer POUR ENVOYER LA RÉPONSE AU HOST ---
+const originalHandleAnswer = handleAnswer;
+window.handleAnswer = function(event) {
+    // Envoi au host si on est client
+    if (!isHost && typeof sendAnswerToHost === 'function') {
+        sendAnswerToHost(event.target.dataset.correct === 'true');
+    }
+    originalHandleAnswer.call(this, event);
+};
+
+// --- HOST : MET À JOUR LE SCORE DU JOUEUR ---
+function handlePlayerData(playerId, data) {
+    switch(data.type) {
+        case 'join':
+            players.set(playerId, { name: data.playerName, score: 0 });
+            updatePlayersList();
+            // Informer TOUS les joueurs de l'état actuel du jeu
+            connections.forEach(conn => {
+                conn.send({
+                    type: 'gameState',
+                    players: Array.from(players.entries())
+                });
+            });
+            break;
+        case 'answer':
+            // Gérer la réponse du joueur
+            if (data.isCorrect) {
+                if (players.has(playerId)) {
+                    players.get(playerId).score = (players.get(playerId).score || 0) + 1;
+                }
+            }
+            break;
     }
 }
 
@@ -618,8 +701,10 @@ function initializeHost(playerName) {
         const startBtn = document.getElementById('start-game-btn');
         startBtn.textContent = 'Choisir le mode de jeu';
         startBtn.disabled = false;
-        startBtn.removeEventListener('click', startMultiplayerGame);
-        startBtn.addEventListener('click', showMultiplayerModeSelection);
+        // Supprime tous les anciens listeners
+        const newStartBtn = startBtn.cloneNode(true);
+        startBtn.parentNode.replaceChild(newStartBtn, startBtn);
+        newStartBtn.addEventListener('click', showMultiplayerModeSelection);
     });
 
     peer.on('connection', (conn) => {
@@ -667,77 +752,7 @@ function joinMultiplayerGame() {
     });
 }
 
-// Fonction pour se connecter à l'hôte
-function connectToHost(playerName, hostCode) {
-    // Nettoyer le code entré (majuscules, sans espaces)
-    const cleanCode = hostCode.trim().toUpperCase();
-    peer = new Peer();
-    
-    peer.on('open', (id) => {
-        console.log('[CLIENT] PeerJS ouvert avec ID :', id);
-        const conn = peer.connect(cleanCode);
-        
-        conn.on('open', () => {
-            console.log('[CLIENT] Connecté à l\'hôte', cleanCode);
-            conn.send({
-                type: 'join',
-                playerName: playerName,
-                playerId: id
-            });
-        });
-
-        conn.on('data', (data) => {
-            handleHostData(data);
-        });
-
-        conn.on('error', (err) => {
-            console.error('[CLIENT] Connexion PeerJS error:', err);
-            showJoinError('Impossible de se connecter à la partie. Vérifie le code ou réessaie.');
-        });
-    });
-    peer.on('error', (err) => {
-        console.error('[CLIENT] PeerJS error:', err);
-        showJoinError('Erreur réseau PeerJS. Réessaie ou change de code.');
-    });
-}
-
-// Affiche une erreur sur l'interface de "rejoindre une partie"
-function showJoinError(msg) {
-    let errorDiv = document.getElementById('join-error');
-    if (!errorDiv) {
-        const joinGameDiv = document.querySelector('.join-game');
-        errorDiv = document.createElement('div');
-        errorDiv.id = 'join-error';
-        errorDiv.style.color = '#ff4444';
-        errorDiv.style.fontWeight = '600';
-        errorDiv.style.margin = '0.7em 0 0.5em 0';
-        errorDiv.style.textAlign = 'center';
-        joinGameDiv.appendChild(errorDiv);
-    }
-    errorDiv.textContent = msg;
-}
-
 // Fonction pour gérer les données reçues par l'hôte
-function handlePlayerData(playerId, data) {
-    switch(data.type) {
-        case 'join':
-            players.set(playerId, { name: data.playerName, score: 0 });
-            updatePlayersList();
-            // Informer TOUS les joueurs de l'état actuel du jeu
-            connections.forEach(conn => {
-                conn.send({
-                    type: 'gameState',
-                    players: Array.from(players.entries())
-                });
-            });
-            break;
-        case 'answer':
-            // Gérer la réponse du joueur
-            break;
-    }
-}
-
-// Fonction pour gérer les données reçues par les joueurs
 function handleHostData(data) {
     switch(data.type) {
         case 'gameState':
@@ -796,6 +811,10 @@ function handleHostData(data) {
         case 'result':
             // Afficher les résultats
             break;
+        case 'endGame':
+            // Afficher l'écran de fin de partie avec le classement
+            showMultiplayerResults(data.classement);
+            break;
     }
 }
 
@@ -851,29 +870,34 @@ function showMultiplayerModeSelection() {
 function showMultiplayerQuestionCountSelection(gameMode) {
     const gameArea = document.querySelector('.game-area');
     const modeLabel = gameModes[gameMode]?.title || '';
+    
     gameArea.innerHTML = `
         <div class="quiz-container fade-in">
             <h2 class="quiz-title">${modeLabel} - Multi-joueurs</h2>
             <div class="game-modes-cards">
-                <button class="game-mode-card multi-count-btn" data-count="10">10 questions</button>
-                <button class="game-mode-card multi-count-btn" data-count="25">25 questions</button>
-                <button class="game-mode-card multi-count-btn" data-count="50">50 questions</button>
-                <button class="game-mode-card multi-count-btn" data-count="100">100 questions</button>
+                <button class="game-mode-card count-btn" data-count="10">10 questions</button>
+                <button class="game-mode-card count-btn" data-count="25">25 questions</button>
+                <button class="game-mode-card count-btn" data-count="50">50 questions</button>
+                <button class="game-mode-card count-btn" data-count="100">100 questions</button>
             </div>
             <button class="menu-btn" onclick="returnToMainMenu()">Retour au menu</button>
         </div>
     `;
     window.soundManager.setupMenuButtonSounds();
-    document.querySelectorAll('.multi-count-btn').forEach(btn => {
-        btn.addEventListener('click', async () => {
+
+    document.querySelectorAll('.count-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
             const questionCount = parseInt(btn.dataset.count);
-            await startMultiplayerGame(gameMode, questionCount);
+            startMultiplayerGame(gameMode, questionCount);
         });
     });
+
+    addQuitButtonClickSound();
 }
 
 // Nouvelle version : démarre la partie multi-joueurs avec choix du mode et du nombre de questions
 async function startMultiplayerGame(gameMode, questionCount) {
+    console.log('Démarrage partie multijoueur:', gameMode, questionCount);
     // Charger les questions selon le mode choisi
     let data = await loadJsonData('data/questions.json');
     if (!data) {
@@ -927,15 +951,76 @@ async function startMultiplayerGame(gameMode, questionCount) {
     });
 
     // Démarrer la partie pour l'hôte
-    displayMultiplayerQuestionScreen(currentQuestionIndex, gameMode);
+    window.renderQuizQuestionScreen(currentQuestionIndex);
+}
+window.startMultiplayerGame = startMultiplayerGame;
+
+// Affiche le classement final multijoueur
+function showMultiplayerResults(classement) {
+    const gameArea = document.querySelector('.game-area');
+    window.soundManager.playResults();
+    gameArea.innerHTML = `
+        <div class="results-container" style="max-width: 420px; margin: 2.5rem auto; background: linear-gradient(135deg, #38bdf8 0%, #2563eb 100%); border-radius: 28px; box-shadow: 0 6px 32px #0002; color: #fff; padding: 2.2rem 1.2rem 2.2rem 1.2rem;">
+            <div class="results-header" style="text-align:center; margin-bottom:1.5em;">
+                <span class="results-icon" style="font-size:3.2rem;">🏆</span>
+                <h2 class="results-title" style="font-size:2.1rem; font-weight:900; color:#ffe066; margin:0.5em 0 0.2em 0; text-shadow: 2px 2px 12px #0005, 0 0 18px #38bdf8cc;">Classement final</h2>
+            </div>
+            <div class="results-summary" style="width:100%;">
+                <table style="width:100%;margin-bottom:1.2em; border-collapse:separate; border-spacing:0 0.5em;">
+                    <thead>
+                        <tr><th style="text-align:left;font-size:1.25rem;color:#b3e0fc;font-weight:700;">Joueur</th><th style="text-align:right;font-size:1.25rem;color:#b3e0fc;font-weight:700;">Score</th></tr>
+                    </thead>
+                    <tbody>
+                        ${classement.map((player, i) => `
+                            <tr style="background:${i===0?'rgba(255,224,102,0.13)':'transparent'}; border-radius:18px;">
+                                <td style="text-align:left;font-weight:900;font-size:1.18rem;color:${i===0?'#ffe066':'#fff'};padding:0.4em 0 0.4em 0.2em;">${i+1}. ${player.name}</td>
+                                <td style="text-align:right;font-weight:900;font-size:1.18rem;color:${i===0?'#ffe066':'#fff'};padding:0.4em 0.2em 0.4em 0;">${player.score}</td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            </div>
+            <button class="menu-btn" style="font-size:1.18rem;padding:1.1rem 2.2rem;margin-top:1.2em;" onclick="returnToMainMenu()">Retour au menu</button>
+        </div>
+    `;
+    window.soundManager.setupMenuButtonSounds();
+    addQuitButtonClickSound();
 }
 
-// Affiche la question pour le multi-joueurs (à adapter selon le mode)
-function displayMultiplayerQuestionScreen(index, gameMode) {
-    // On réutilise le rendu du quiz classique pour l'instant
-    if (typeof window.renderQuizQuestionScreen === 'function') {
-        window.renderQuizQuestionScreen(index);
-    } else {
-        displayQuestion(index);
-    }
+// Flag pour éviter de renvoyer le classement plusieurs fois
+let hasSentEndGame = false;
+
+function sendEndGameToAll() {
+    if (hasSentEndGame) return;
+    hasSentEndGame = true;
+    // Génère le classement trié
+    const classement = Array.from(players.values())
+        .sort((a, b) => b.score - a.score);
+    connections.forEach(conn => {
+        conn.send({
+            type: 'endGame',
+            classement
+        });
+    });
+    // Affiche aussi le classement côté hôte
+    showMultiplayerResults(classement);
 }
+
+// Hook sur retour menu
+const originalReturnToMainMenu = window.returnToMainMenu;
+window.returnToMainMenu = function() {
+    if (isHost && connections.length > 0 && !hasSentEndGame) {
+        sendEndGameToAll();
+        // NE PAS faire de retour auto, laisser l'hôte cliquer sur le bouton du classement
+    } else {
+        hasSentEndGame = false; // reset pour la prochaine partie
+        originalReturnToMainMenu();
+    }
+};
+
+// Hook sur fermeture onglet
+window.addEventListener('beforeunload', function(e) {
+    if (isHost && connections.length > 0) {
+        sendEndGameToAll();
+    }
+});
