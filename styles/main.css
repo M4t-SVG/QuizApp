@@ -1635,7 +1635,7 @@ body.accueil .mode-selection {
     z-index: 10000;
     opacity: 0;
     transition: opacity 0.18s cubic-bezier(0.4, 0, 0.2, 1);
-    backdrop-filter: blur(2.5px);
+    /* backdrop-filter: blur(2.5px); */
 }
 
 .flash-overlay.flash-warning {

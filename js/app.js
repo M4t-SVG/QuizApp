@@ -288,14 +288,16 @@ function handleAnswer(event) {
     flashEffect(selectedIndex === question.correctAnswer);
     if (timerInterval) clearInterval(timerInterval);
     
-    // Si on est en mode "pass", afficher directement l'écran de passage du téléphone
+    // Si on est en mode "pass", afficher la correction 5 secondes puis passer à l'écran de passage
     if (quizGameMode === 'pass') {
-        if (currentQuestionIndex < questions.length - 1) {
-            currentQuestionIndex++;
-            showPassPhoneScreen(currentQuestionIndex, questions.length, () => displayQuestion(currentQuestionIndex));
-        } else {
-            showResults();
-        }
+        setTimeout(() => {
+            if (currentQuestionIndex < questions.length - 1) {
+                currentQuestionIndex++;
+                showPassPhoneScreen(currentQuestionIndex, questions.length, () => window.renderQuizQuestionScreen(currentQuestionIndex));
+            } else {
+                showResults();
+            }
+        }, 5000);
     } else {
         // En mode normal, afficher le bouton suivant
         const nextBtn = document.querySelector('.next-btn');
@@ -313,8 +315,19 @@ function showCorrectAnswer() {
             btn.classList.add('correct');
         }
     });
-    const nextBtn = document.querySelector('.next-btn');
-    if (nextBtn) nextBtn.style.display = 'block';
+    if (quizGameMode === 'pass') {
+        setTimeout(() => {
+            if (currentQuestionIndex < questions.length - 1) {
+                currentQuestionIndex++;
+                showPassPhoneScreen(currentQuestionIndex, questions.length, () => window.renderQuizQuestionScreen(currentQuestionIndex));
+            } else {
+                showResults();
+            }
+        }, 5000);
+    } else {
+        const nextBtn = document.querySelector('.next-btn');
+        if (nextBtn) nextBtn.style.display = 'block';
+    }
 }
 
 function showResults() {
