@@ -17,9 +17,19 @@ const gameModes = {
     }
 };
 
+// Variables pour la gestion des parties multi-joueurs
+let peer = null;
+let connections = [];
+let isHost = false;
+let gameCode = '';
+let players = new Map(); // Map pour stocker les joueurs et leurs scores
+let currentPlayerTurn = null;
+
 // Exposer les fonctions globalement
 window.startGame = startGame;
 window.returnToMainMenu = returnToMainMenu;
+window.createMultiplayerGame = createMultiplayerGame;
+window.joinMultiplayerGame = joinMultiplayerGame;
 
 // Gestionnaire d'événements pour les boutons de mode de jeu
 document.addEventListener('DOMContentLoaded', function() {
@@ -515,6 +525,7 @@ function returnToMainMenu() {
     // Afficher le menu principal et cacher la zone de jeu
     modeSelection.style.display = 'flex';
     gameArea.style.display = 'none';
+    gameArea.classList.remove('multiplayer-vertical-center');
     
     // Relancer la musique de fond
     window.soundManager.playBackground();
@@ -523,4 +534,408 @@ function returnToMainMenu() {
 // Effet visuel lors de la réponse (placeholder)
 function flashEffect(isCorrect) {
     // Tu peux ajouter un effet visuel ici si tu veux
+}
+
+// Fonction pour créer une partie multi-joueurs
+async function createMultiplayerGame() {
+    const gameArea = document.querySelector('.game-area');
+    gameArea.classList.add('multiplayer-vertical-center');
+    gameArea.innerHTML = `
+        <div class="multiplayer-container fade-in">
+            <h2>Créer une partie</h2>
+            <div class="player-setup">
+                <input type="text" id="player-name" placeholder="Votre pseudo" maxlength="20">
+                <button id="create-game-btn">Créer la partie</button>
+            </div>
+            <div id="waiting-room" style="display: none;">
+                <h3>Salle d'attente</h3>
+                <div style="margin-bottom:0.5em; color:#b3e0fc; font-size:0.98em;">Code de la partie :</div>
+                <div id="game-code" title="Clique pour copier le code"></div>
+                <div style="font-size:0.85em; color:#b3e0fc; margin-bottom:1em;">Partage ce code à tes amis pour qu'ils rejoignent la partie</div>
+                <div id="players-list"></div>
+                <button id="start-game-btn" disabled>Démarrer la partie</button>
+            </div>
+            <button class="menu-btn" onclick="returnToMainMenu()">Retour au menu</button>
+        </div>
+    `;
+    window.soundManager.setupMenuButtonSounds();
+
+    document.getElementById('create-game-btn').addEventListener('click', () => {
+        const playerName = document.getElementById('player-name').value.trim();
+        if (playerName) {
+            initializeHost(playerName);
+        } else {
+            alert('Veuillez entrer un pseudo');
+        }
+    });
+
+    // Ajout du copier-coller sur le code de partie
+    setTimeout(() => {
+        const codeElem = document.getElementById('game-code');
+        if (codeElem) {
+            codeElem.addEventListener('click', () => {
+                navigator.clipboard.writeText(codeElem.textContent);
+                codeElem.style.background = '#38bdf8cc';
+                codeElem.style.color = '#fff';
+                setTimeout(() => {
+                    codeElem.style.background = '';
+                    codeElem.style.color = '';
+                }, 700);
+            });
+        }
+    }, 500);
+}
+
+// Fonction utilitaire pour générer un code de partie court et lisible
+function generateShortGameCode(length = 6) {
+    const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // Pas de O, I, 1, 0 pour éviter confusion
+    let code = '';
+    for (let i = 0; i < length; i++) {
+        code += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return code;
+}
+
+// Fonction pour initialiser l'hôte
+function initializeHost(playerName) {
+    // Générer un code court et simple
+    const shortCode = generateShortGameCode();
+    // Utiliser le code court comme PeerJS ID
+    peer = new Peer(shortCode);
+    
+    peer.on('open', (id) => {
+        console.log('[HOST] PeerJS ouvert avec ID :', id);
+        gameCode = id;
+        isHost = true;
+        players.set(id, { name: playerName, score: 0 });
+        
+        document.querySelector('.player-setup').style.display = 'none';
+        document.getElementById('waiting-room').style.display = 'block';
+        document.getElementById('game-code').textContent = gameCode;
+        updatePlayersList();
+        
+        // Remplacer le bouton par "Choisir le mode de jeu"
+        const startBtn = document.getElementById('start-game-btn');
+        startBtn.textContent = 'Choisir le mode de jeu';
+        startBtn.disabled = false;
+        startBtn.removeEventListener('click', startMultiplayerGame);
+        startBtn.addEventListener('click', showMultiplayerModeSelection);
+    });
+
+    peer.on('connection', (conn) => {
+        console.log('[HOST] Connexion entrante de', conn.peer);
+        connections.push(conn);
+        
+        conn.on('open', () => {
+            conn.on('data', (data) => {
+                handlePlayerData(conn.id, data);
+            });
+        });
+    });
+
+    peer.on('error', (err) => {
+        console.error('[HOST] PeerJS error:', err);
+    });
+}
+
+// Fonction pour rejoindre une partie
+function joinMultiplayerGame() {
+    const gameArea = document.querySelector('.game-area');
+    gameArea.classList.add('multiplayer-vertical-center');
+    gameArea.innerHTML = `
+        <div class="multiplayer-container fade-in">
+            <h2>Rejoindre une partie</h2>
+            <div class="join-game">
+                <input type="text" id="player-name" placeholder="Votre pseudo" maxlength="20">
+                <input type="text" id="game-code" placeholder="Code de la partie">
+                <button id="join-game-btn">Rejoindre</button>
+            </div>
+            <button class="menu-btn" onclick="returnToMainMenu()">Retour au menu</button>
+        </div>
+    `;
+    window.soundManager.setupMenuButtonSounds();
+
+    document.getElementById('join-game-btn').addEventListener('click', () => {
+        const playerName = document.getElementById('player-name').value.trim();
+        const code = document.getElementById('game-code').value.trim();
+        
+        if (playerName && code) {
+            connectToHost(playerName, code);
+        } else {
+            alert('Veuillez remplir tous les champs');
+        }
+    });
+}
+
+// Fonction pour se connecter à l'hôte
+function connectToHost(playerName, hostCode) {
+    // Nettoyer le code entré (majuscules, sans espaces)
+    const cleanCode = hostCode.trim().toUpperCase();
+    peer = new Peer();
+    
+    peer.on('open', (id) => {
+        console.log('[CLIENT] PeerJS ouvert avec ID :', id);
+        const conn = peer.connect(cleanCode);
+        
+        conn.on('open', () => {
+            console.log('[CLIENT] Connecté à l\'hôte', cleanCode);
+            conn.send({
+                type: 'join',
+                playerName: playerName,
+                playerId: id
+            });
+        });
+
+        conn.on('data', (data) => {
+            handleHostData(data);
+        });
+
+        conn.on('error', (err) => {
+            console.error('[CLIENT] Connexion PeerJS error:', err);
+            showJoinError('Impossible de se connecter à la partie. Vérifie le code ou réessaie.');
+        });
+    });
+    peer.on('error', (err) => {
+        console.error('[CLIENT] PeerJS error:', err);
+        showJoinError('Erreur réseau PeerJS. Réessaie ou change de code.');
+    });
+}
+
+// Affiche une erreur sur l'interface de "rejoindre une partie"
+function showJoinError(msg) {
+    let errorDiv = document.getElementById('join-error');
+    if (!errorDiv) {
+        const joinGameDiv = document.querySelector('.join-game');
+        errorDiv = document.createElement('div');
+        errorDiv.id = 'join-error';
+        errorDiv.style.color = '#ff4444';
+        errorDiv.style.fontWeight = '600';
+        errorDiv.style.margin = '0.7em 0 0.5em 0';
+        errorDiv.style.textAlign = 'center';
+        joinGameDiv.appendChild(errorDiv);
+    }
+    errorDiv.textContent = msg;
+}
+
+// Fonction pour gérer les données reçues par l'hôte
+function handlePlayerData(playerId, data) {
+    switch(data.type) {
+        case 'join':
+            players.set(playerId, { name: data.playerName, score: 0 });
+            updatePlayersList();
+            // Informer TOUS les joueurs de l'état actuel du jeu
+            connections.forEach(conn => {
+                conn.send({
+                    type: 'gameState',
+                    players: Array.from(players.entries())
+                });
+            });
+            break;
+        case 'answer':
+            // Gérer la réponse du joueur
+            break;
+    }
+}
+
+// Fonction pour gérer les données reçues par les joueurs
+function handleHostData(data) {
+    switch(data.type) {
+        case 'gameState':
+            // Afficher la salle d'attente et la liste des joueurs côté client
+            const gameArea = document.querySelector('.game-area');
+            gameArea.classList.add('multiplayer-vertical-center');
+            const playersList = data.players.map(([id, player]) => `
+                <div class="player-item">
+                    <span class="player-name">${player.name}</span>
+                </div>
+            `).join('');
+            gameArea.innerHTML = `
+                <div class="multiplayer-container fade-in">
+                    <h2>Salle d'attente</h2>
+                    <div style="margin-bottom:0.5em; color:#b3e0fc; font-size:0.98em;">En attente du lancement de la partie...</div>
+                    <div id="players-list">${playersList}</div>
+                    <div style="font-size:0.85em; color:#b3e0fc; margin-bottom:1em;">Tu es bien connecté, attends que l'hôte démarre la partie.</div>
+                    <button class="menu-btn" onclick="returnToMainMenu()">Retour au menu</button>
+                </div>
+            `;
+            window.soundManager.setupMenuButtonSounds();
+            break;
+        case 'gameStart':
+            // Réception du début de partie et des questions
+            questions = data.questions;
+            quizGameMode = data.gameMode;
+            currentQuestionIndex = 0;
+            score = 0;
+            isAnswerSelected = false;
+
+            // Définir le rendu de la question pour le client
+            window.renderQuizQuestionScreen = function(index) {
+                const gameArea = document.querySelector('.game-area');
+                const modeLabel = gameModes[quizGameMode]?.title || '';
+                gameArea.innerHTML = `
+                    <h2 class="quiz-title">${modeLabel} - Multi-joueurs</h2>
+                    <div class="quiz-status-bar">
+                        ⏱️ <span id="time">${gameModes[quizGameMode].timePerQuestion}</span> s &nbsp;|&nbsp; Question <span id="current-question">${index+1}</span>/${questions.length}
+                    </div>
+                    <div class="question-bubble"><span class="question">Chargement de la question...</span></div>
+                    <div class="answers"></div>
+                    <div class="quiz-actions">
+                        <button class="next-btn" style="display: none;">Question suivante</button>
+                        <button class="quit-btn">Quitter le quiz</button>
+                    </div>
+                `;
+                displayQuestion(index);
+            };
+
+            // Afficher la première question
+            window.renderQuizQuestionScreen(currentQuestionIndex);
+            break;
+        case 'question':
+            // Afficher la nouvelle question (pour la synchro avancée)
+            break;
+        case 'result':
+            // Afficher les résultats
+            break;
+    }
+}
+
+// Fonction pour mettre à jour la liste des joueurs
+function updatePlayersList() {
+    const playersList = document.getElementById('players-list');
+    if (playersList) {
+        playersList.innerHTML = Array.from(players.entries())
+            .map(([id, player]) => `
+                <div class="player-item">
+                    <span class="player-name">${player.name}</span>
+                    <span class="player-score">${player.score}</span>
+                </div>
+            `).join('');
+    }
+}
+
+// Affiche le choix du mode de jeu et du nombre de questions pour le multi-joueurs
+function showMultiplayerModeSelection() {
+    const gameArea = document.querySelector('.game-area');
+    gameArea.innerHTML = `
+        <div class="quiz-container fade-in">
+            <h2 class="quiz-title">Choisis le mode de jeu</h2>
+            <div class="game-modes-cards">
+                <button class="game-mode-card multi-mode-btn" data-mode="quiz">
+                    <span class="icon">🎯</span>
+                    <span class="title">Quiz Culture Générale</span>
+                    <span class="desc">Testez vos connaissances avec des questions variées</span>
+                </button>
+                <button class="game-mode-card multi-mode-btn" data-mode="photos">
+                    <span class="icon">📸</span>
+                    <span class="title">Devinettes Photos</span>
+                    <span class="desc">Devinez ce qui se cache derrière les images</span>
+                </button>
+                <button class="game-mode-card multi-mode-btn" data-mode="truth-dare">
+                    <span class="icon">🎲</span>
+                    <span class="title">Action/Vérité</span>
+                    <span class="desc">Choisissez entre une action ou une vérité</span>
+                </button>
+            </div>
+            <button class="menu-btn" onclick="returnToMainMenu()">Retour au menu</button>
+        </div>
+    `;
+    window.soundManager.setupMenuButtonSounds();
+    document.querySelectorAll('.multi-mode-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const mode = btn.dataset.mode;
+            showMultiplayerQuestionCountSelection(mode);
+        });
+    });
+}
+
+function showMultiplayerQuestionCountSelection(gameMode) {
+    const gameArea = document.querySelector('.game-area');
+    const modeLabel = gameModes[gameMode]?.title || '';
+    gameArea.innerHTML = `
+        <div class="quiz-container fade-in">
+            <h2 class="quiz-title">${modeLabel} - Multi-joueurs</h2>
+            <div class="game-modes-cards">
+                <button class="game-mode-card multi-count-btn" data-count="10">10 questions</button>
+                <button class="game-mode-card multi-count-btn" data-count="25">25 questions</button>
+                <button class="game-mode-card multi-count-btn" data-count="50">50 questions</button>
+                <button class="game-mode-card multi-count-btn" data-count="100">100 questions</button>
+            </div>
+            <button class="menu-btn" onclick="returnToMainMenu()">Retour au menu</button>
+        </div>
+    `;
+    window.soundManager.setupMenuButtonSounds();
+    document.querySelectorAll('.multi-count-btn').forEach(btn => {
+        btn.addEventListener('click', async () => {
+            const questionCount = parseInt(btn.dataset.count);
+            await startMultiplayerGame(gameMode, questionCount);
+        });
+    });
+}
+
+// Nouvelle version : démarre la partie multi-joueurs avec choix du mode et du nombre de questions
+async function startMultiplayerGame(gameMode, questionCount) {
+    // Charger les questions selon le mode choisi
+    let data = await loadJsonData('data/questions.json');
+    if (!data) {
+        alert('Impossible de charger les questions.');
+        return;
+    }
+    if (gameMode === 'quiz') {
+        questions = shuffleArray([...data.quiz.questions]);
+    } else if (gameMode === 'photos') {
+        questions = shuffleArray([...data.photos.challenges]);
+    } else if (gameMode === 'truth-dare') {
+        questions = shuffleArray([...data.truthDare.questions]);
+    } else {
+        alert('Mode de jeu inconnu.');
+        return;
+    }
+    if (questions.length > questionCount) {
+        questions = questions.slice(0, questionCount);
+    }
+    quizGameMode = gameMode;
+    currentQuestionIndex = 0;
+    score = 0;
+    isAnswerSelected = false;
+
+    // Définir le rendu de la question pour le multi-joueurs
+    window.renderQuizQuestionScreen = function(index) {
+        const gameArea = document.querySelector('.game-area');
+        const modeLabel = gameModes[quizGameMode]?.title || '';
+        gameArea.innerHTML = `
+            <h2 class="quiz-title">${modeLabel} - Multi-joueurs</h2>
+            <div class="quiz-status-bar">
+                ⏱️ <span id="time">${gameModes[quizGameMode].timePerQuestion}</span> s &nbsp;|&nbsp; Question <span id="current-question">${index+1}</span>/${questions.length}
+            </div>
+            <div class="question-bubble"><span class="question">Chargement de la question...</span></div>
+            <div class="answers"></div>
+            <div class="quiz-actions">
+                <button class="next-btn" style="display: none;">Question suivante</button>
+                <button class="quit-btn">Quitter le quiz</button>
+            </div>
+        `;
+        displayQuestion(index);
+    };
+
+    // Informer tous les joueurs que la partie commence
+    connections.forEach(conn => {
+        conn.send({
+            type: 'gameStart',
+            questions: questions,
+            gameMode: gameMode
+        });
+    });
+
+    // Démarrer la partie pour l'hôte
+    displayMultiplayerQuestionScreen(currentQuestionIndex, gameMode);
+}
+
+// Affiche la question pour le multi-joueurs (à adapter selon le mode)
+function displayMultiplayerQuestionScreen(index, gameMode) {
+    // On réutilise le rendu du quiz classique pour l'instant
+    if (typeof window.renderQuizQuestionScreen === 'function') {
+        window.renderQuizQuestionScreen(index);
+    } else {
+        displayQuestion(index);
+    }
 }

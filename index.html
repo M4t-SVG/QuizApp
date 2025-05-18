@@ -17,26 +17,40 @@
         </header>
         <div class="game-modes-cards">
             <button class="game-mode-card" data-mode="quiz">
-                        <span class="icon">🎯</span>
+                <span class="icon">🎯</span>
                 <span class="title">Quiz Culture Générale</span>
-                <span class="desc">Test de culture générale</span>
-                    </button>
+                <span class="desc">Testez vos connaissances avec des questions variées</span>
+            </button>
             <button class="game-mode-card" data-mode="photos">
-                        <span class="icon">📸</span>
+                <span class="icon">📸</span>
                 <span class="title">Devinettes Photos</span>
-                <span class="desc">Devine la photo mystère</span>
-                    </button>
-            <button class="game-mode-card" data-mode="truth-dare" onclick="alert('Bientôt disponible !'); return false;">
-                        <span class="icon">🎲</span>
+                <span class="desc">Devinez ce qui se cache derrière les images</span>
+            </button>
+            <button class="game-mode-card" data-mode="truth-dare">
+                <span class="icon">🎲</span>
                 <span class="title">Action/Vérité</span>
-                <span class="desc">Défis et vérités croustillants</span>
-                    </button>
-                </div>
+                <span class="desc">Choisissez entre une action ou une vérité</span>
+            </button>
+            <div class="menu-separator">
+                <span class="separator-text">— Mode Multi-joueurs —</span>
+            </div>
+            <button class="game-mode-card" onclick="createMultiplayerGame()">
+                <span class="icon">🎮</span>
+                <span class="title">Créer une partie</span>
+                <span class="desc">Invite tes amis et jouez ensemble en temps réel</span>
+            </button>
+            <button class="game-mode-card" onclick="joinMultiplayerGame()">
+                <span class="icon">👥</span>
+                <span class="title">Rejoindre une partie</span>
+                <span class="desc">Entre le code d'un ami pour rejoindre sa partie</span>
+            </button>
+        </div>
         <footer>
             <p>100% gratuit - Pas besoin de compte - Mobile friendly</p>
         </footer>
     </div>
     <div class="game-area" style="display:none;"></div>
+    <script src="https://unpkg.com/peerjs@1.4.7/dist/peerjs.min.js"></script>
     <script src="js/sounds.js"></script>
     <script src="js/app.js"></script>
     <script>
