@@ -537,10 +537,16 @@ async function initPhotoGame() {
         </div>
     `;
     window.soundManager.setupMenuButtonSounds();
+    
+    // Empêcher l'auto-focus sur les boutons
     document.querySelectorAll('.count-btn').forEach(btn => {
         btn.addEventListener('click', async () => {
             const questionCount = parseInt(btn.dataset.count);
             await startPhotoGameWithCount(questionCount);
+        });
+        // Désactiver le focus sur le bouton
+        btn.addEventListener('focus', (e) => {
+            e.target.blur();
         });
     });
 
