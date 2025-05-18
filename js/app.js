@@ -442,15 +442,13 @@ function showResults() {
     const questionsAnswered = Math.min(currentQuestionIndex + 1, totalQuestions);
     const percentage = totalQuestions > 0 ? Math.round((score / questionsAnswered) * 100) : 0;
     window.soundManager.playResults();
-    
-    // Si on est en mode multijoueur, on affiche directement le tableau des scores
-    if (isHost || connections.length > 0) {
+    // Correction : n'afficher le tableau multijoueur que si on est vraiment en multijoueur
+    if ((isHost && connections.length > 0) || (!isHost && typeof peer !== 'undefined' && peer && peer.id && myPeerConnection)) {
         const classement = Array.from(players.values())
             .sort((a, b) => b.score - a.score);
         showMultiplayerResults(classement);
         return;
     }
-
     // Sinon on affiche les résultats normaux pour une partie solo
     const gameArea = document.querySelector('.game-area');
     gameArea.innerHTML = `
@@ -1069,6 +1067,8 @@ function showMultiplayerResults(classement) {
     `;
     window.soundManager.setupMenuButtonSounds();
     addQuitButtonClickSound();
+    // Réinitialiser l'état multijoueur après affichage du classement
+    setTimeout(resetMultiplayerState, 500);
 }
 
 // Flag pour éviter de renvoyer le classement plusieurs fois
@@ -1077,20 +1077,17 @@ let hasSentEndGame = false;
 function sendEndGameToAll() {
     if (hasSentEndGame) return;
     hasSentEndGame = true;
-    // Génère le classement trié
     const classement = Array.from(players.values())
         .sort((a, b) => b.score - a.score);
-    
-    // Envoie le classement à tous les joueurs
     connections.forEach(conn => {
         conn.send({
             type: 'endGame',
             classement
         });
     });
-    
-    // Affiche le classement pour l'hôte
     showMultiplayerResults(classement);
+    // Réinitialiser l'état multijoueur après la fin de partie
+    setTimeout(resetMultiplayerState, 500);
 }
 
 // Hook sur retour menu
@@ -1173,4 +1170,28 @@ function initCarousel() {
             });
         });
     });
+}
+
+// Fonction pour réinitialiser l'état multijoueur
+function resetMultiplayerState() {
+    // Fermer toutes les connexions PeerJS côté hôte
+    if (connections && connections.length > 0) {
+        connections.forEach(conn => {
+            try { conn.close && conn.close(); } catch (e) {}
+        });
+        connections = [];
+    }
+    // Fermer la connexion PeerJS côté client
+    if (typeof peer !== 'undefined' && peer && peer.disconnect) {
+        try { peer.disconnect(); } catch (e) {}
+    }
+    if (typeof myPeerConnection !== 'undefined' && myPeerConnection && myPeerConnection.close) {
+        try { myPeerConnection.close(); } catch (e) {}
+        myPeerConnection = null;
+    }
+    isHost = false;
+    gameCode = '';
+    players = new Map();
+    currentPlayerTurn = null;
+    hasSentEndGame = false;
 }
