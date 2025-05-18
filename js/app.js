@@ -197,13 +197,23 @@ async function startQuizWithCount(questionCount, gameMode) {
     try {
         const response = await fetch('data/questions.json');
         const data = await response.json();
-        questions = [...data.quiz.questions];
-        // Mélanger les questions
-        questions = shuffleArray(questions);
-        // Limiter le nombre de questions si nécessaire
-        if (questions.length > questionCount) {
-            questions = questions.slice(0, questionCount);
+        const allQuestions = [...data.quiz.questions];
+        
+        // Sélectionner des questions uniques
+        const selectedQuestions = [];
+        const usedQuestionIds = new Set();
+        
+        while (selectedQuestions.length < questionCount && usedQuestionIds.size < allQuestions.length) {
+            const randomIndex = Math.floor(Math.random() * allQuestions.length);
+            const question = allQuestions[randomIndex];
+            
+            if (!usedQuestionIds.has(question.id)) {
+                selectedQuestions.push(question);
+                usedQuestionIds.add(question.id);
+            }
         }
+        
+        questions = selectedQuestions;
         quizGameMode = gameMode;
         currentQuestionIndex = 0;
         score = 0;
