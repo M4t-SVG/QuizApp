@@ -424,6 +424,16 @@ function showResults() {
     const questionsAnswered = Math.min(currentQuestionIndex + 1, totalQuestions);
     const percentage = totalQuestions > 0 ? Math.round((score / questionsAnswered) * 100) : 0;
     window.soundManager.playResults();
+    
+    // Si on est en mode multijoueur, on affiche directement le tableau des scores
+    if (isHost || connections.length > 0) {
+        const classement = Array.from(players.values())
+            .sort((a, b) => b.score - a.score);
+        showMultiplayerResults(classement);
+        return;
+    }
+
+    // Sinon on affiche les résultats normaux pour une partie solo
     const gameArea = document.querySelector('.game-area');
     gameArea.innerHTML = `
         <div class="results-container">
@@ -1049,13 +1059,16 @@ function sendEndGameToAll() {
     // Génère le classement trié
     const classement = Array.from(players.values())
         .sort((a, b) => b.score - a.score);
+    
+    // Envoie le classement à tous les joueurs
     connections.forEach(conn => {
         conn.send({
             type: 'endGame',
             classement
         });
     });
-    // Affiche aussi le classement côté hôte
+    
+    // Affiche le classement pour l'hôte
     showMultiplayerResults(classement);
 }
 
@@ -1064,7 +1077,6 @@ const originalReturnToMainMenu = window.returnToMainMenu;
 window.returnToMainMenu = function() {
     if (isHost && connections.length > 0 && !hasSentEndGame) {
         sendEndGameToAll();
-        // NE PAS faire de retour auto, laisser l'hôte cliquer sur le bouton du classement
     } else {
         hasSentEndGame = false; // reset pour la prochaine partie
         originalReturnToMainMenu();
