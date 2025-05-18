@@ -2280,6 +2280,606 @@
                 ],
                 "correctAnswer": 0,
                 "explanation": "'Les Hauts de Hurlevent' est un roman d'Emily Brontë."
+            },
+            {
+                "id": 191,
+                "question": "Qui a réalisé le film 'Pulp Fiction' ?",
+                "answers": [
+                    "Quentin Tarantino",
+                    "Martin Scorsese",
+                    "Steven Spielberg",
+                    "Francis Ford Coppola"
+                ],
+                "correctAnswer": 0,
+                "explanation": "Pulp Fiction a été réalisé par Quentin Tarantino en 1994."
+            },
+            {
+                "id": 192,
+                "question": "Quel groupe a sorti l'album 'The Dark Side of the Moon' ?",
+                "answers": [
+                    "Pink Floyd",
+                    "Led Zeppelin",
+                    "The Beatles",
+                    "The Rolling Stones"
+                ],
+                "correctAnswer": 0,
+                "explanation": "The Dark Side of the Moon est un album de Pink Floyd sorti en 1973."
+            },
+            {
+                "id": 193,
+                "question": "Qui a peint 'Les Demoiselles d'Avignon' ?",
+                "answers": [
+                    "Pablo Picasso",
+                    "Henri Matisse",
+                    "Salvador Dalí",
+                    "Joan Miró"
+                ],
+                "correctAnswer": 0,
+                "explanation": "Les Demoiselles d'Avignon est un tableau de Pablo Picasso peint en 1907."
+            },
+            {
+                "id": 194,
+                "question": "Quel est le premier film d'animation de Disney ?",
+                "answers": [
+                    "Blanche-Neige et les Sept Nains",
+                    "Pinocchio",
+                    "Dumbo",
+                    "Bambi"
+                ],
+                "correctAnswer": 0,
+                "explanation": "Blanche-Neige et les Sept Nains est le premier long métrage d'animation de Disney, sorti en 1937."
+            },
+            {
+                "id": 195,
+                "question": "Qui a composé la 'Symphonie du Nouveau Monde' ?",
+                "answers": [
+                    "Antonín Dvořák",
+                    "Johannes Brahms",
+                    "Pyotr Ilyich Tchaikovsky",
+                    "Gustav Mahler"
+                ],
+                "correctAnswer": 0,
+                "explanation": "La Symphonie du Nouveau Monde a été composée par Antonín Dvořák en 1893."
+            },
+            {
+                "id": 196,
+                "question": "Quel est le premier président de la Ve République française ?",
+                "answers": [
+                    "Charles de Gaulle",
+                    "Georges Pompidou",
+                    "Valéry Giscard d'Estaing",
+                    "François Mitterrand"
+                ],
+                "correctAnswer": 0,
+                "explanation": "Charles de Gaulle a été le premier président de la Ve République de 1959 à 1969."
+            },
+            {
+                "id": 197,
+                "question": "Qui a découvert la structure de l'ADN ?",
+                "answers": [
+                    "James Watson et Francis Crick",
+                    "Marie Curie",
+                    "Albert Einstein",
+                    "Louis Pasteur"
+                ],
+                "correctAnswer": 0,
+                "explanation": "James Watson et Francis Crick ont découvert la structure en double hélice de l'ADN en 1953."
+            },
+            {
+                "id": 198,
+                "question": "Quel est le premier album de Michael Jackson ?",
+                "answers": [
+                    "Got to Be There",
+                    "Thriller",
+                    "Off the Wall",
+                    "Bad"
+                ],
+                "correctAnswer": 0,
+                "explanation": "Got to Be There est le premier album solo de Michael Jackson, sorti en 1972."
+            },
+            {
+                "id": 199,
+                "question": "Qui a réalisé 'Les Sept Samouraïs' ?",
+                "answers": [
+                    "Akira Kurosawa",
+                    "Yasujirō Ozu",
+                    "Kenji Mizoguchi",
+                    "Hayao Miyazaki"
+                ],
+                "correctAnswer": 0,
+                "explanation": "Les Sept Samouraïs a été réalisé par Akira Kurosawa en 1954."
+            },
+            {
+                "id": 200,
+                "question": "Quel est le premier film parlant de l'histoire du cinéma ?",
+                "answers": [
+                    "Le Chanteur de jazz",
+                    "Les Lumières de la ville",
+                    "Metropolis",
+                    "Le Kid"
+                ],
+                "correctAnswer": 0,
+                "explanation": "Le Chanteur de jazz, sorti en 1927, est considéré comme le premier film parlant."
+            },
+            {
+                "id": 201,
+                "question": "Qui a composé la 'Symphonie inachevée' ?",
+                "answers": [
+                    "Franz Schubert",
+                    "Ludwig van Beethoven",
+                    "Wolfgang Amadeus Mozart",
+                    "Johann Sebastian Bach"
+                ],
+                "correctAnswer": 0,
+                "explanation": "La Symphonie inachevée a été composée par Franz Schubert en 1822."
+            },
+            {
+                "id": 202,
+                "question": "Quel est le premier film en couleur de l'histoire ?",
+                "answers": [
+                    "Becky Sharp",
+                    "Le Magicien d'Oz",
+                    "Autant en emporte le vent",
+                    "Les Aventures de Robin des Bois"
+                ],
+                "correctAnswer": 0,
+                "explanation": "Becky Sharp, sorti en 1935, est considéré comme le premier film en couleur."
+            },
+            {
+                "id": 203,
+                "question": "Qui a peint 'La Nuit étoilée' ?",
+                "answers": [
+                    "Vincent van Gogh",
+                    "Claude Monet",
+                    "Pablo Picasso",
+                    "Salvador Dalí"
+                ],
+                "correctAnswer": 0,
+                "explanation": "La Nuit étoilée a été peinte par Vincent van Gogh en 1889."
+            },
+            {
+                "id": 204,
+                "question": "Quel est le premier album des Beatles ?",
+                "answers": [
+                    "Please Please Me",
+                    "Sgt. Pepper's Lonely Hearts Club Band",
+                    "Abbey Road",
+                    "Let It Be"
+                ],
+                "correctAnswer": 0,
+                "explanation": "Please Please Me est le premier album des Beatles, sorti en 1963."
+            },
+            {
+                "id": 205,
+                "question": "Qui a réalisé 'Les Temps modernes' ?",
+                "answers": [
+                    "Charlie Chaplin",
+                    "Buster Keaton",
+                    "Harold Lloyd",
+                    "Laurel et Hardy"
+                ],
+                "correctAnswer": 0,
+                "explanation": "Les Temps modernes a été réalisé par Charlie Chaplin en 1936."
+            },
+            {
+                "id": 206,
+                "question": "Quel est le premier film de la saga Star Wars ?",
+                "answers": [
+                    "Star Wars, épisode IV : Un nouvel espoir",
+                    "Star Wars, épisode I : La Menace fantôme",
+                    "Star Wars, épisode V : L'Empire contre-attaque",
+                    "Star Wars, épisode VI : Le Retour du Jedi"
+                ],
+                "correctAnswer": 0,
+                "explanation": "Star Wars, épisode IV : Un nouvel espoir est le premier film de la saga, sorti en 1977."
+            },
+            {
+                "id": 207,
+                "question": "Qui a composé la 'Symphonie fantastique' ?",
+                "answers": [
+                    "Hector Berlioz",
+                    "Franz Schubert",
+                    "Robert Schumann",
+                    "Felix Mendelssohn"
+                ],
+                "correctAnswer": 0,
+                "explanation": "La Symphonie fantastique a été composée par Hector Berlioz en 1830."
+            },
+            {
+                "id": 208,
+                "question": "Quel est le premier film d'animation japonais ?",
+                "answers": [
+                    "Momotarō, le divin soldat de la mer",
+                    "Le Château de Cagliostro",
+                    "Nausicaä de la vallée du vent",
+                    "Le Voyage de Chihiro"
+                ],
+                "correctAnswer": 0,
+                "explanation": "Momotarō, le divin soldat de la mer est considéré comme le premier long métrage d'animation japonais, sorti en 1945."
+            },
+            {
+                "id": 209,
+                "question": "Qui a peint 'Les Nymphéas' ?",
+                "answers": [
+                    "Claude Monet",
+                    "Pierre-Auguste Renoir",
+                    "Édouard Manet",
+                    "Camille Pissarro"
+                ],
+                "correctAnswer": 0,
+                "explanation": "Les Nymphéas est une série de peintures de Claude Monet réalisée entre 1899 et 1926."
+            },
+            {
+                "id": 210,
+                "question": "Quel est le premier album de David Bowie ?",
+                "answers": [
+                    "David Bowie",
+                    "Space Oddity",
+                    "The Man Who Sold the World",
+                    "Hunky Dory"
+                ],
+                "correctAnswer": 0,
+                "explanation": "David Bowie est le premier album de l'artiste, sorti en 1967."
+            },
+            {
+                "id": 211,
+                "question": "Qui a réalisé 'Les Temps modernes' ?",
+                "answers": [
+                    "Charlie Chaplin",
+                    "Buster Keaton",
+                    "Harold Lloyd",
+                    "Laurel et Hardy"
+                ],
+                "correctAnswer": 0,
+                "explanation": "Les Temps modernes a été réalisé par Charlie Chaplin en 1936."
+            },
+            {
+                "id": 212,
+                "question": "Quel est le premier film de la saga Harry Potter ?",
+                "answers": [
+                    "Harry Potter à l'école des sorciers",
+                    "Harry Potter et la Chambre des secrets",
+                    "Harry Potter et le Prisonnier d'Azkaban",
+                    "Harry Potter et la Coupe de feu"
+                ],
+                "correctAnswer": 0,
+                "explanation": "Harry Potter à l'école des sorciers est le premier film de la saga, sorti en 2001."
+            },
+            {
+                "id": 213,
+                "question": "Qui a composé la 'Symphonie du Nouveau Monde' ?",
+                "answers": [
+                    "Antonín Dvořák",
+                    "Johannes Brahms",
+                    "Pyotr Ilyich Tchaikovsky",
+                    "Gustav Mahler"
+                ],
+                "correctAnswer": 0,
+                "explanation": "La Symphonie du Nouveau Monde a été composée par Antonín Dvořák en 1893."
+            },
+            {
+                "id": 214,
+                "question": "Quel est le premier film de la saga James Bond ?",
+                "answers": [
+                    "James Bond 007 contre Dr. No",
+                    "Bons baisers de Russie",
+                    "Goldfinger",
+                    "Opération Tonnerre"
+                ],
+                "correctAnswer": 0,
+                "explanation": "James Bond 007 contre Dr. No est le premier film de la saga, sorti en 1962."
+            },
+            {
+                "id": 215,
+                "question": "Qui a peint 'La Persistance de la mémoire' ?",
+                "answers": [
+                    "Salvador Dalí",
+                    "René Magritte",
+                    "Joan Miró",
+                    "Max Ernst"
+                ],
+                "correctAnswer": 0,
+                "explanation": "La Persistance de la mémoire a été peinte par Salvador Dalí en 1931."
+            },
+            {
+                "id": 216,
+                "question": "Quel est le premier album de Queen ?",
+                "answers": [
+                    "Queen",
+                    "Queen II",
+                    "Sheer Heart Attack",
+                    "A Night at the Opera"
+                ],
+                "correctAnswer": 0,
+                "explanation": "Queen est le premier album du groupe, sorti en 1973."
+            },
+            {
+                "id": 217,
+                "question": "Qui a réalisé 'Les Temps modernes' ?",
+                "answers": [
+                    "Charlie Chaplin",
+                    "Buster Keaton",
+                    "Harold Lloyd",
+                    "Laurel et Hardy"
+                ],
+                "correctAnswer": 0,
+                "explanation": "Les Temps modernes a été réalisé par Charlie Chaplin en 1936."
+            },
+            {
+                "id": 218,
+                "question": "Quel est le premier film de la saga Le Seigneur des anneaux ?",
+                "answers": [
+                    "Le Seigneur des anneaux : La Communauté de l'anneau",
+                    "Le Seigneur des anneaux : Les Deux Tours",
+                    "Le Seigneur des anneaux : Le Retour du roi",
+                    "Le Hobbit : Un voyage inattendu"
+                ],
+                "correctAnswer": 0,
+                "explanation": "Le Seigneur des anneaux : La Communauté de l'anneau est le premier film de la saga, sorti en 2001."
+            },
+            {
+                "id": 219,
+                "question": "Qui a composé la 'Symphonie inachevée' ?",
+                "answers": [
+                    "Franz Schubert",
+                    "Ludwig van Beethoven",
+                    "Wolfgang Amadeus Mozart",
+                    "Johann Sebastian Bach"
+                ],
+                "correctAnswer": 0,
+                "explanation": "La Symphonie inachevée a été composée par Franz Schubert en 1822."
+            },
+            {
+                "id": 220,
+                "question": "Quel est le premier film de la saga Indiana Jones ?",
+                "answers": [
+                    "Les Aventuriers de l'arche perdue",
+                    "Indiana Jones et le Temple maudit",
+                    "Indiana Jones et la Dernière Croisade",
+                    "Indiana Jones et le Royaume du crâne de cristal"
+                ],
+                "correctAnswer": 0,
+                "explanation": "Les Aventuriers de l'arche perdue est le premier film de la saga, sorti en 1981."
+            },
+            {
+                "id": 221,
+                "question": "Qui a peint 'Le Cri' ?",
+                "answers": [
+                    "Edvard Munch",
+                    "Vincent van Gogh",
+                    "Pablo Picasso",
+                    "Salvador Dalí"
+                ],
+                "correctAnswer": 0,
+                "explanation": "Le Cri a été peint par Edvard Munch en 1893."
+            },
+            {
+                "id": 222,
+                "question": "Quel est le premier album de Pink Floyd ?",
+                "answers": [
+                    "The Piper at the Gates of Dawn",
+                    "A Saucerful of Secrets",
+                    "More",
+                    "Ummagumma"
+                ],
+                "correctAnswer": 0,
+                "explanation": "The Piper at the Gates of Dawn est le premier album de Pink Floyd, sorti en 1967."
+            },
+            {
+                "id": 223,
+                "question": "Qui a réalisé 'Les Temps modernes' ?",
+                "answers": [
+                    "Charlie Chaplin",
+                    "Buster Keaton",
+                    "Harold Lloyd",
+                    "Laurel et Hardy"
+                ],
+                "correctAnswer": 0,
+                "explanation": "Les Temps modernes a été réalisé par Charlie Chaplin en 1936."
+            },
+            {
+                "id": 224,
+                "question": "Quel est le premier film de la saga Matrix ?",
+                "answers": [
+                    "Matrix",
+                    "Matrix Reloaded",
+                    "Matrix Revolutions",
+                    "Matrix Resurrections"
+                ],
+                "correctAnswer": 0,
+                "explanation": "Matrix est le premier film de la saga, sorti en 1999."
+            },
+            {
+                "id": 225,
+                "question": "Qui a composé la 'Symphonie fantastique' ?",
+                "answers": [
+                    "Hector Berlioz",
+                    "Franz Schubert",
+                    "Robert Schumann",
+                    "Felix Mendelssohn"
+                ],
+                "correctAnswer": 0,
+                "explanation": "La Symphonie fantastique a été composée par Hector Berlioz en 1830."
+            },
+            {
+                "id": 226,
+                "question": "Quel est le premier film de la saga Rocky ?",
+                "answers": [
+                    "Rocky",
+                    "Rocky II",
+                    "Rocky III",
+                    "Rocky IV"
+                ],
+                "correctAnswer": 0,
+                "explanation": "Rocky est le premier film de la saga, sorti en 1976."
+            },
+            {
+                "id": 227,
+                "question": "Qui a peint 'Les Tournesols' ?",
+                "answers": [
+                    "Vincent van Gogh",
+                    "Claude Monet",
+                    "Paul Gauguin",
+                    "Henri Matisse"
+                ],
+                "correctAnswer": 0,
+                "explanation": "Les Tournesols est une série de tableaux de Vincent van Gogh peints en 1888."
+            },
+            {
+                "id": 228,
+                "question": "Quel est le premier album de The Rolling Stones ?",
+                "answers": [
+                    "The Rolling Stones",
+                    "The Rolling Stones No. 2",
+                    "Out of Our Heads",
+                    "Aftermath"
+                ],
+                "correctAnswer": 0,
+                "explanation": "The Rolling Stones est le premier album du groupe, sorti en 1964."
+            },
+            {
+                "id": 229,
+                "question": "Qui a réalisé 'Les Temps modernes' ?",
+                "answers": [
+                    "Charlie Chaplin",
+                    "Buster Keaton",
+                    "Harold Lloyd",
+                    "Laurel et Hardy"
+                ],
+                "correctAnswer": 0,
+                "explanation": "Les Temps modernes a été réalisé par Charlie Chaplin en 1936."
+            },
+            {
+                "id": 230,
+                "question": "Quel est le premier film de la saga Terminator ?",
+                "answers": [
+                    "Terminator",
+                    "Terminator 2 : Le Jugement dernier",
+                    "Terminator 3 : Le Soulèvement des machines",
+                    "Terminator Renaissance"
+                ],
+                "correctAnswer": 0,
+                "explanation": "Terminator est le premier film de la saga, sorti en 1984."
+            },
+            {
+                "id": 231,
+                "question": "Qui a composé la 'Symphonie du Nouveau Monde' ?",
+                "answers": [
+                    "Antonín Dvořák",
+                    "Johannes Brahms",
+                    "Pyotr Ilyich Tchaikovsky",
+                    "Gustav Mahler"
+                ],
+                "correctAnswer": 0,
+                "explanation": "La Symphonie du Nouveau Monde a été composée par Antonín Dvořák en 1893."
+            },
+            {
+                "id": 232,
+                "question": "Quel est le premier film de la saga Alien ?",
+                "answers": [
+                    "Alien, le huitième passager",
+                    "Aliens, le retour",
+                    "Alien 3",
+                    "Alien, la résurrection"
+                ],
+                "correctAnswer": 0,
+                "explanation": "Alien, le huitième passager est le premier film de la saga, sorti en 1979."
+            },
+            {
+                "id": 233,
+                "question": "Qui a peint 'La Joconde' ?",
+                "answers": [
+                    "Léonard de Vinci",
+                    "Michel-Ange",
+                    "Raphaël",
+                    "Sandro Botticelli"
+                ],
+                "correctAnswer": 0,
+                "explanation": "La Joconde a été peinte par Léonard de Vinci entre 1503 et 1519."
+            },
+            {
+                "id": 234,
+                "question": "Quel est le premier album de The Beatles ?",
+                "answers": [
+                    "Please Please Me",
+                    "With the Beatles",
+                    "A Hard Day's Night",
+                    "Beatles for Sale"
+                ],
+                "correctAnswer": 0,
+                "explanation": "Please Please Me est le premier album des Beatles, sorti en 1963."
+            },
+            {
+                "id": 235,
+                "question": "Qui a réalisé 'Les Temps modernes' ?",
+                "answers": [
+                    "Charlie Chaplin",
+                    "Buster Keaton",
+                    "Harold Lloyd",
+                    "Laurel et Hardy"
+                ],
+                "correctAnswer": 0,
+                "explanation": "Les Temps modernes a été réalisé par Charlie Chaplin en 1936."
+            },
+            {
+                "id": 236,
+                "question": "Quel est le premier film de la saga Retour vers le futur ?",
+                "answers": [
+                    "Retour vers le futur",
+                    "Retour vers le futur II",
+                    "Retour vers le futur III",
+                    "Retour vers le futur IV"
+                ],
+                "correctAnswer": 0,
+                "explanation": "Retour vers le futur est le premier film de la saga, sorti en 1985."
+            },
+            {
+                "id": 237,
+                "question": "Qui a composé la 'Symphonie inachevée' ?",
+                "answers": [
+                    "Franz Schubert",
+                    "Ludwig van Beethoven",
+                    "Wolfgang Amadeus Mozart",
+                    "Johann Sebastian Bach"
+                ],
+                "correctAnswer": 0,
+                "explanation": "La Symphonie inachevée a été composée par Franz Schubert en 1822."
+            },
+            {
+                "id": 238,
+                "question": "Quel est le premier film de la saga Die Hard ?",
+                "answers": [
+                    "Die Hard",
+                    "Die Hard 2",
+                    "Die Hard : Une journée en enfer",
+                    "Die Hard 4.0"
+                ],
+                "correctAnswer": 0,
+                "explanation": "Die Hard est le premier film de la saga, sorti en 1988."
+            },
+            {
+                "id": 239,
+                "question": "Qui a peint 'Les Ménines' ?",
+                "answers": [
+                    "Diego Vélasquez",
+                    "Francisco de Goya",
+                    "El Greco",
+                    "Bartolomé Esteban Murillo"
+                ],
+                "correctAnswer": 0,
+                "explanation": "Les Ménines a été peint par Diego Vélasquez en 1656."
+            },
+            {
+                "id": 240,
+                "question": "Quel est le premier album de Led Zeppelin ?",
+                "answers": [
+                    "Led Zeppelin",
+                    "Led Zeppelin II",
+                    "Led Zeppelin III",
+                    "Led Zeppelin IV"
+                ],
+                "correctAnswer": 0,
+                "explanation": "Led Zeppelin est le premier album du groupe, sorti en 1969."
             }
         ]
     },
