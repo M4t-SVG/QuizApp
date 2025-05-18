@@ -396,17 +396,15 @@ async function startPhotoGameWithCount(questionCount) {
 
         const gameArea = document.querySelector('.game-area');
         gameArea.innerHTML = `
-            <h2 class="quiz-title">${gameModes.photos.title}</h2>
-            <div class="quiz-status-bar">
-                ⏱️ <span id="time">${gameModes.photos.timePerQuestion}</span> s &nbsp;|&nbsp; Photo <span id="current-question">1</span>/${questionCount}
-            </div>
-            <div class="photo-question-block">
-                <img src="" alt="Photo à deviner" class="mystery-photo">
-                <div class="answers"></div>
-            </div>
-            <div class="quiz-actions">
-                <button class="next-btn" style="display: none;">Photo suivante</button>
-                <button class="quit-btn" style="display: block;">Quitter le quiz</button>
+            <div class="photo-game-container fade-in">
+                <h2 class="quiz-title">Devinette Photo</h2>
+                <div class="game-modes-cards">
+                    <button class="game-mode-card count-btn" data-count="10">10 photos</button>
+                    <button class="game-mode-card count-btn" data-count="25">25 photos</button>
+                    <button class="game-mode-card count-btn" data-count="50">50 photos</button>
+                    <button class="game-mode-card count-btn" data-count="100">100 photos</button>
+                </div>
+                <button class="menu-btn" onclick="returnToMainMenu()">Retour au menu</button>
             </div>
         `;
         window.soundManager.setupMenuButtonSounds();
@@ -428,33 +426,26 @@ async function startPhotoGameWithCount(questionCount) {
             shuffleArray(shuffledAnswers);
             const newCorrectIndex = shuffledAnswers.indexOf(correctAnswer);
 
-            // Générer le layout split-screen
-            let splitScreenHTML = `
-                <div class="photo-game-container photo-quiz-split fade-in">
-                  <div class="photo-left">
-                    <img src="${challenge.image}" alt="Photo à deviner" class="mystery-photo" />
-                  </div>
-                  <div class="photo-right">
-                    <div class="answers">
-                      ${shuffledAnswers.map((answer, i) => `
-                        <button class="answer-btn" data-index="${i}" data-correct="${i === newCorrectIndex}" type="button">${answer}</button>
-                      `).join('')}
-                    </div>
-                  </div>
-                </div>
-                <div class="quiz-actions">
-                  <button class="next-btn" style="display: none;">Photo suivante</button>
-                  <button class="quit-btn" style="display: block;">Quitter le quiz</button>
-                </div>
-            `;
-
-            // Afficher le titre et la barre de statut au-dessus
+            // Générer la structure identique au quiz classique
             gameArea.innerHTML = `
-                <h2 class="quiz-title">${gameModes.photos.title}</h2>
-                <div class="quiz-status-bar">
-                    ⏱️ <span id="time">${gameModes.photos.timePerQuestion}</span> s &nbsp;|&nbsp; Photo <span id="current-question">${index+1}</span>/${challenges.length}
+                <div class="quiz-container fade-in">
+                    <h2 class="quiz-title">${gameModes.photos.title}</h2>
+                    <div class="quiz-status-bar">
+                        ⏱️ <span id="time">${gameModes.photos.timePerQuestion}</span> s &nbsp;|&nbsp; Photo <span id="current-question">${index+1}</span>/${challenges.length}
+                    </div>
+                    <div class="question-bubble">
+                        <img src="${challenge.image}" alt="Photo à deviner" class="mystery-photo" />
+                    </div>
+                    <div class="answers">
+                        ${shuffledAnswers.map((answer, i) => `
+                            <button class="answer-btn" data-index="${i}" data-correct="${i === newCorrectIndex}" type="button">${answer}</button>
+                        `).join('')}
+                    </div>
+                    <div class="quiz-actions">
+                        <button class="next-btn" style="display: none;">Photo suivante</button>
+                        <button class="quit-btn" style="display: block;">Quitter le quiz</button>
+                    </div>
                 </div>
-                ${splitScreenHTML}
             `;
             window.soundManager.setupMenuButtonSounds();
 
