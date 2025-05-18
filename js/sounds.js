@@ -106,7 +106,7 @@ class SoundManager {
         if (!this.isMuted) {
             this.sounds.timer.loop = true;
             this.sounds.timer.currentTime = 0;
-            this.sounds.timer.play().catch(error => {
+            this.sounds.timer.play().catch(error => { 
                 console.log('Erreur lors de la lecture du son du timer (loop):', error);
             });
         }

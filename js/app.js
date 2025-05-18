@@ -523,28 +523,10 @@ async function startPhotoGameWithCount(questionCount) {
         // Limiter le nombre de défis
         challenges = challenges.slice(0, questionCount);
 
-        const gameArea = document.querySelector('.game-area');
-        gameArea.innerHTML = `
-            <div class="photo-game-container fade-in">
-                <h2 class="quiz-title">Devinette Photo</h2>
-                <div class="game-modes-cards">
-                    <button class="game-mode-card count-btn" data-count="10">10 photos</button>
-                    <button class="game-mode-card count-btn" data-count="25">25 photos</button>
-                    <button class="game-mode-card count-btn" data-count="50">50 photos</button>
-                    <button class="game-mode-card count-btn" data-count="100">100 photos</button>
-                </div>
-                <button class="menu-btn" onclick="returnToMainMenu()">Retour au menu</button>
-            </div>
-        `;
-        window.soundManager.setupMenuButtonSounds();
-
         let currentQuestionIndex = 0;
         let score = 0;
         let timerInterval;
         let isAnswerSelected = false;
-
-        const nextBtn = document.querySelector('.next-btn');
-        const quitBtn = document.querySelector('.quit-btn');
 
         function displayQuestion(index) {
             isAnswerSelected = false;
@@ -555,7 +537,7 @@ async function startPhotoGameWithCount(questionCount) {
             shuffleArray(shuffledAnswers);
             const newCorrectIndex = shuffledAnswers.indexOf(correctAnswer);
 
-            // Générer la structure identique au quiz classique
+            const gameArea = document.querySelector('.game-area');
             gameArea.innerHTML = `
                 <div class="quiz-container fade-in">
                     <h2 class="quiz-title">${gameModes.photos.title}</h2>
@@ -572,11 +554,82 @@ async function startPhotoGameWithCount(questionCount) {
                     </div>
                     <div class="quiz-actions">
                         <button class="next-btn" style="display: none;">Photo suivante</button>
-                        <button class="quit-btn" style="display: block;">Quitter le quiz</button>
+                        <button class="quit-btn">Quitter le quiz</button>
                     </div>
                 </div>
             `;
+
+            // Ajouter les écouteurs d'événements pour les boutons de réponse
+            document.querySelectorAll('.answer-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    if (isAnswerSelected) return;
+                    isAnswerSelected = true;
+                    const isCorrect = btn.dataset.correct === 'true';
+                    
+                    // Mettre à jour le score
+                    if (isCorrect) score++;
+                    
+                    // Afficher la bonne réponse
+                    document.querySelectorAll('.answer-btn').forEach(b => {
+                        if (b.dataset.correct === 'true') {
+                            b.style.backgroundColor = '#4CAF50';
+                            b.style.color = 'white';
+                        } else if (b === btn && !isCorrect) {
+                            b.style.backgroundColor = '#f44336';
+                            b.style.color = 'white';
+                        }
+                    });
+
+                    // Afficher le bouton suivant
+                    const nextBtn = document.querySelector('.next-btn');
+                    nextBtn.style.display = 'block';
+                    nextBtn.onclick = () => {
+                        if (currentQuestionIndex < challenges.length - 1) {
+                            currentQuestionIndex++;
+                            displayQuestion(currentQuestionIndex);
+                        } else {
+                            showResults(score, challenges.length);
+                        }
+                    };
+                });
+            });
+
+            // Ajouter l'écouteur pour le bouton quitter
+            document.querySelector('.quit-btn').onclick = () => {
+                returnToMainMenu();
+            };
+
+            // Démarrer le timer
+            if (timerInterval) {
+                clearInterval(timerInterval);
+            }
+            const timeDisplay = document.getElementById('time');
+            timeDisplay.textContent = gameModes.photos.timePerQuestion;
+            timerInterval = startTimer(gameModes.photos.timePerQuestion, timeDisplay, () => {
+                if (!isAnswerSelected) {
+                    document.querySelectorAll('.answer-btn').forEach(btn => {
+                        if (btn.dataset.correct === 'true') {
+                            btn.style.backgroundColor = '#4CAF50';
+                            btn.style.color = 'white';
+                        }
+                    });
+                    const nextBtn = document.querySelector('.next-btn');
+                    nextBtn.style.display = 'block';
+                    nextBtn.onclick = () => {
+                        if (currentQuestionIndex < challenges.length - 1) {
+                            currentQuestionIndex++;
+                            displayQuestion(currentQuestionIndex);
+                        } else {
+                            showResults(score, challenges.length);
+                        }
+                    };
+                }
+            });
         }
+
+        // Démarrer la première question
+        displayQuestion(currentQuestionIndex);
+
     } catch (error) {
         console.error('Erreur lors du chargement des questions:', error);
         const gameArea = document.querySelector('.game-area');

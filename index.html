@@ -15,7 +15,8 @@
             <p class="slogan">Le jeu parfait pour animer ta soirée !</p>
             <button id="sound-toggle" class="sound-btn" title="Activer/Désactiver le son">🔊</button>
         </header>
-        <div class="game-modes-cards">
+        <div class="game-modes-group">
+          <div class="game-modes-cards main-modes">
             <button class="game-mode-card" data-mode="quiz">
                 <span class="icon">🎯</span>
                 <span class="title">Quiz Culture Générale</span>
@@ -31,9 +32,11 @@
                 <span class="title">Action/Vérité</span>
                 <span class="desc">Choisissez entre une action ou une vérité</span>
             </button>
-            <div class="menu-separator">
-                <span class="separator-text">— Mode Multi-joueurs —</span>
-            </div>
+          </div>
+          <div class="menu-separator">
+            <span class="separator-text">— Mode Multi-joueurs —</span>
+          </div>
+          <div class="game-modes-cards multi-modes">
             <button class="game-mode-card" onclick="createMultiplayerGame()">
                 <span class="icon">🎮</span>
                 <span class="title">Créer une partie</span>
@@ -44,9 +47,11 @@
                 <span class="title">Rejoindre une partie</span>
                 <span class="desc">Entre le code d'un ami pour rejoindre sa partie</span>
             </button>
+          </div>
         </div>
         <footer>
             <p>100% gratuit - Pas besoin de compte - Mobile friendly</p>
+            <p>Version béta : 1.1</p>
         </footer>
     </div>
     <div class="game-area" style="display:none;"></div>
